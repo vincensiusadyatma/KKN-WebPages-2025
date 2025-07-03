@@ -1,51 +1,46 @@
-{{-- <nav>
-    <i class='bx bx-menu' ></i>
-    <a href="#" class="nav-link">Categories</a>
-    <form action="#">
-        <div class="form-input">
-            <input type="search" placeholder="Search...">
-            <button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
-        </div>
-    </form>
-    <input type="checkbox" id="switch-mode" hidden>
-    <label for="switch-mode" class="switch-mode"></label>
- 
+   <header class="flex items-center h-20 px-6 sm:px-10 bg-white">
+  <!-- Menu Button for Mobile -->
+  <button class="block sm:hidden relative flex-shrink-0 p-2 mr-2 text-gray-600 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800 rounded-full">
+    <span class="sr-only">Menu</span>
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+    </svg>
+  </button>
 
-    <button id="dropdownUserAvatarButton" data-dropdown-toggle="dropdownAvatar" class="flex text-sm bg-transparent rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" type="button">
-        <span class="sr-only">Open user menu</span>
-        @if(auth()->user()->photo_path)
-        <img src="{{ asset('storage/' . auth()->user()->photo_path) }}" id="avatarButton" type="button" data-dropdown-toggle="userDropdown" data-dropdown-placement="bottom-start" class="w-10 h-10 rounded-full cursor-pointer" alt="User dropdown">
-        @else
-            <img src="{{ asset('img/assets/profile1.png') }}" id="avatarButton" type="button" data-dropdown-toggle="userDropdown" data-dropdown-placement="bottom-start" class="w-10 h-10 rounded-full cursor-pointer" alt="User dropdown">
-        @endif
-       
+  <!-- Search Input -->
+  <div class="relative w-full max-w-md sm:-ml-2">
+    <svg viewBox="0 0 20 20" fill="currentColor" class="absolute h-6 w-6 mt-2.5 ml-2 text-gray-400">
+      <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+    </svg>
+    <input type="text" placeholder="Search..." class="py-2 pl-10 pr-4 w-full border-4 border-transparent placeholder-gray-400 focus:bg-gray-50 rounded-lg" />
+  </div>
+
+  <!-- Right Side: User Info & Buttons -->
+  <div class="flex items-center ml-auto space-x-4">
+    <!-- Notification -->
+    <button class="relative p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:bg-gray-100 focus:text-gray-600 rounded-full">
+      <span class="sr-only">Notifications</span>
+      <span class="absolute top-0 right-0 h-2 w-2 mt-1 mr-2 bg-red-500 rounded-full"></span>
+      <span class="absolute top-0 right-0 h-2 w-2 mt-1 mr-2 bg-red-500 rounded-full animate-ping"></span>
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1" />
+      </svg>
     </button>
 
-       
-<!-- Dropdown menu -->
-<div id="userDropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-    <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
-        <div>{{ auth()->user()->username ?? 'User' }}</div>
-        <div class="font-medium truncate">{{ auth()->user()->email ?? 'User' }}</div>
+    <!-- User Profile -->
+    <div class="flex items-center space-x-3">
+      <div class="hidden md:flex flex-col items-end leading-tight">
+        <span class="font-semibold">Vito</span>
+        <span class="text-sm text-gray-600">Student</span>
+      </div>
+      <img src="https://img.freepik.com/free-photo/african-woman-studio-white-wall-woman-white-shirt_1157-47613.jpg?size=626&ext=jpg&ga=GA1.2.516224105.1653748033" alt="User" class="h-12 w-12 rounded-full object-cover" />
     </div>
-    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="avatarButton">
-        @if(auth()->user()->roles->contains('name', 'user'))
-            <!-- Tautan ke Dashboard User -->
-            <li>
-                <a href="{{ route('show-dashboard') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard User</a>
-            </li>
-        @endif
-        <li>
-            <a href="{{ route('show-profile') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Profile</a>
-        </li>
-        <li>
-            <a href="/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Home</a>
-        </li>
-    </ul>
-    <div class="py-1">
-        <a href="{{ route('handle-logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>
-    </div>
-</div>
 
-  
-</nav> --}}
+    <!-- Logout Button -->
+    <a href="/logout" class="p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:bg-gray-100 focus:text-gray-600 rounded-full" title="Logout">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+      </svg>
+    </a>
+  </div>
+</header>

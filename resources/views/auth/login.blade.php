@@ -28,7 +28,7 @@
         {{-- Header --}}
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold tracking-wide text-[var(--primary-color)]">Login</h2>
-            <a href="#" class="text-sm text-[var(--primary-color)] hover:underline">Daftar</a>
+            <a href="{{route('show-register')}}" class="text-sm text-[var(--primary-color)] hover:underline">Daftar</a>
         </div>
 
         {{-- Form --}}

@@ -28,7 +28,7 @@
                 <h2 class="text-4xl font-semibold mb-6" style="color: var(--primary-color)">Register</h2>
 
                 {{-- Form --}}
-                <form method="POST" action="#">
+                <form method="POST" action="{{ route('handle-register') }}">
                     @csrf
 
                     {{-- Email --}}
