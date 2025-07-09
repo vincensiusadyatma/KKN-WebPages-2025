@@ -32,5 +32,6 @@ Route::middleware(['CheckRole:user'])->prefix('dashboard')->group(function () {
     // Route::get('/blog/delete/{id}', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
 
     Route::get('/berita', [DashboardController::class, 'showBerita'])->name('show-berita');
+    Route::get('/admin_management', [DashboardController::class, 'showAdminManagement'])->name('show-admin-management');
    
 });

@@ -34,7 +34,7 @@
 
 
             <!-- Akun -->
-            <a href="/akun" class="inline-flex items-center justify-center py-3 hover:text-white hover:bg-gray-700 focus:bg-gray-700 focus:text-white rounded-lg" title="Akun">
+            <a href="/dashboard/admin_management" class="inline-flex items-center justify-center py-3 hover:text-white hover:bg-gray-700 focus:bg-gray-700 focus:text-white rounded-lg" title="Akun">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M5.121 17.804A10.973 10.973 0 0112 15c2.43 0 4.665.77 6.879 2.072M15 11a3 3 0 11-6 0 3 3 0 016 0z" />

@@ -33,6 +33,14 @@ class DashboardController extends Controller{
           ]);
     }
 
+    public function showAdminManagement(){
+        $user = Auth::user();
+
+        return view('admin.user_admin_dashboard',[
+            'user' => $user,
+        ]);
+    }
+
     public function showCreateBlog(){
         $user = Auth::user();
         // dd("s");
