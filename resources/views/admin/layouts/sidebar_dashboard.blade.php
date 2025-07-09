@@ -23,7 +23,7 @@
                 </svg>
             </a>
 
-    <a href="/berita" class="inline-flex items-center justify-center py-3 hover:text-white hover:bg-gray-700 focus:bg-gray-700 focus:text-white rounded-lg" title="Berita">
+    <a href="/dashboard/berita" class="inline-flex items-center justify-center py-3 hover:text-white hover:bg-gray-700 focus:bg-gray-700 focus:text-white rounded-lg" title="Berita">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
             stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round"

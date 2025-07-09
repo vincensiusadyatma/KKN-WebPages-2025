@@ -4,12 +4,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Core\DashboardController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
 // Route::get('/', function () {
-//     return view('main.main');
-// })->name('main');
+//     return view('welcome');
+// });
+Route::get('/', function () {
+    return view('main.main');
+})->name('main');
 
 
 Route::prefix('auth')->middleware('guest')->group(function () {
@@ -31,6 +31,6 @@ Route::middleware(['CheckRole:user'])->prefix('dashboard')->group(function () {
     // Route::get('/blog/update/{id}', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
     // Route::get('/blog/delete/{id}', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
 
-    Route::get('/berita', [DashboardController::class, 'showDashboard'])->name('show-berita');
+    Route::get('/berita', [DashboardController::class, 'showBerita'])->name('show-berita');
    
 });

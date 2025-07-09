@@ -9,12 +9,12 @@ class DashboardController extends Controller{
     public function showDashboard(){
         $user = Auth::user();
 
-       return view('admin.dashboard', [
-    'jumlahBlog' => 12,
-    'jumlahBerita' => 8,
-    'dibuatOlehSaya' => 5,
-    'jumlahAdmin' => 3,
-]);
+        return view('admin.dashboard', [
+        'jumlahBlog' => 12,
+        'jumlahBerita' => 8,
+        'dibuatOlehSaya' => 5,
+        'jumlahAdmin' => 3,
+    ]);
 
     }
 
@@ -22,6 +22,13 @@ class DashboardController extends Controller{
           $user = Auth::user();
 
           return view('admin.blog_dashboard',[
+            'user' => $user,
+          ]);
+    }
+
+    public function showBerita(){
+        $user = Auth::user();
+        return view('admin.berita_dashboard',[
             'user' => $user,
           ]);
     }
