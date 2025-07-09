@@ -4,12 +4,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Core\DashboardController;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
 Route::get('/', function () {
-    return view('main.main');
-})->name('main');
+    return view('welcome');
+});
+// Route::get('/', function () {
+//     return view('main.main');
+// })->name('main');
 
 
 Route::prefix('auth')->middleware('guest')->group(function () {
@@ -23,4 +23,14 @@ Route::get('/logout', [AuthController::class, 'handleLogout'])->name('handle-log
 
 Route::middleware(['CheckRole:user'])->prefix('dashboard')->group(function () {
     Route::get('/', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
+
+    Route::get('/blog', [DashboardController::class, 'showBlog'])->name('show-blog');
+    // Route::get('/blog/{id}', [DashboardController::class, 'showDashboard'])->name('show-blog-detail');
+    Route::get('/blog/create', [DashboardController::class, 'showCreateBlog'])->name('show-create-blog');
+    Route::get('/blog/create/handle', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
+    // Route::get('/blog/update/{id}', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
+    // Route::get('/blog/delete/{id}', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
+
+    Route::get('/berita', [DashboardController::class, 'showDashboard'])->name('show-berita');
+   
 });
