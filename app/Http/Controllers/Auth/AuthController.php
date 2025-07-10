@@ -20,7 +20,7 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-  public function handleLogin(Request $request)
+public function handleLogin(Request $request)
 {
     try {
         $input = $request->input('email'); 
@@ -35,19 +35,23 @@ class AuthController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
-        // Ambil user terlebih dahulu
+        // Ambil user
         $user = \App\Models\User::where($fieldType, $input)->first();
 
-        // Cek apakah user ada
+        // Jika user tidak ditemukan
         if (!$user) {
-            notify()->error('Akun tidak ditemukan.', 'Login Gagal');
-            return redirect()->route('main');
+            return redirect()->route('main')->with('toast', [
+                'type' => 'error',
+                'message' => 'Akun tidak ditemukan.',
+            ]);
         }
 
         // Cek status user
         if ($user->status !== 'active') {
-            notify()->error('Akun Anda belum aktif atau sedang ditolak.', 'Akses Ditolak');
-            return redirect()->route('main');
+            return redirect()->route('main')->with('toast', [
+                'type' => 'error',
+                'message' => 'Akun Anda belum aktif atau sedang ditolak.',
+            ]);
         }
 
         // Coba autentikasi
@@ -58,44 +62,56 @@ class AuthController extends Controller
 
             // Hanya admin atau super admin yang bisa login
             if ($role === 'admin' || $role === 'super admin') {
-                notify()->success('You have successfully logged in as admin', 'Success');
-                return redirect()->route('show-dashboard');
+                return redirect()->route('show-dashboard')->with('toast', [
+                    'type' => 'success',
+                    'message' => 'Anda berhasil login sebagai admin.',
+                ]);
             }
 
-            // Jika bukan admin
+            // Jika bukan admin, logout
             Auth::logout();
-            notify()->error('Hanya admin yang dapat mengakses dashboard.', 'Akses Ditolak');
-            return redirect()->route('main');
+            return redirect()->route('main')->with('toast', [
+                'type' => 'error',
+                'message' => 'Hanya admin yang dapat mengakses dashboard.',
+            ]);
         }
 
         // Jika password salah
-        notify()->error('Password salah. Silakan coba lagi.', 'Login Gagal');
-        return redirect()->route('main');
+        return redirect()->route('main')->with('toast', [
+            'type' => 'error',
+            'message' => 'Password salah. Silakan coba lagi.',
+        ]);
 
     } catch (\Illuminate\Validation\ValidationException $e) {
-        notify()->error('Validasi gagal: ' . $e->getMessage(), 'Error Validasi');
-        return redirect()->back()->withErrors($e->errors());
+        return redirect()->back()
+            ->withErrors($e->errors())
+            ->with('toast', [
+                'type' => 'error',
+                'message' => 'Validasi gagal: ' . $e->getMessage(),
+            ]);
     } catch (\Exception $e) {
-        notify()->error('Terjadi kesalahan. Coba lagi nanti.', 'Error');
-        return redirect()->route('main')->with('error', 'Terjadi kesalahan sistem.');
+        return redirect()->route('main')->with('toast', [
+            'type' => 'error',
+            'message' => 'Terjadi kesalahan sistem.',
+        ]);
     }
 }
 
-   public function handleLogOut(Request $request)
-    {
+ public function handleLogOut(Request $request)
+{
+    Auth::logout();
 
-        Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
 
-        $request->session()->invalidate();
+    return redirect()->route('main')->with('toast', [
+        'type' => 'success',
+        'message' => 'Anda telah berhasil logout.',
+    ]);
+}
 
-        $request->session()->regenerateToken();
-       
-        notify()->success('You have successfully logged out.');
-        return redirect()->route('main')->with('success', 'Anda telah berhasil logout.');
-    }
-    
 
-    public function handleRegister(Request $request)
+ public function handleRegister(Request $request)
 {
     // Validasi input form
     $credentials = $request->validate([
@@ -110,7 +126,6 @@ class AuthController extends Controller
         'password.confirmed' => 'Password konfirmasi tidak sesuai.',
     ]);
 
-    // Mulai transaksi database
     DB::beginTransaction();
 
     try {
@@ -121,34 +136,33 @@ class AuthController extends Controller
             'status' => 'active',
         ]);
 
-        // Assign default role (misal role_id 2 = user biasa)
+        // Assign default role
         DB::table('role_ownerships')->insert([
             'user_id' => $user->id,
-            'role_id' => 2,
+            'role_id' => 2, // misalnya role_id 2 adalah 'user'
         ]);
 
-        // Login otomatis setelah registrasi
+        // Login otomatis
         Auth::login($user);
 
-        // Commit transaksi
         DB::commit();
 
-        // Notifikasi sukses
-        notify()->success('Registrasi berhasil. Selamat datang!', 'Sukses');
-
-        // Redirect ke halaman utama
-        return redirect()->route('main');
+        // Beri toast sukses dan redirect
+        return redirect()->route('main')->with('toast', [
+            'type' => 'success',
+            'message' => 'Registrasi berhasil. Selamat datang!',
+        ]);
     } catch (\Throwable $th) {
-        // Rollback jika terjadi error
         DB::rollBack();
-
-        // Simpan log error
         Log::error('Registration Error: ' . $th->getMessage());
 
-        // Redirect kembali ke form register dengan pesan error
-        return redirect()->route('show-register')->withErrors(['error' => 'Registrasi gagal. Silakan coba lagi.']);
+        return redirect()->route('show-register')
+            ->withErrors(['error' => 'Registrasi gagal. Silakan coba lagi.'])
+            ->with('toast', [
+                'type' => 'error',
+                'message' => 'Terjadi kesalahan saat registrasi.',
+            ]);
     }
 }
-
 
 }
