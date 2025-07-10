@@ -20,7 +20,7 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-   public function handleLogin(Request $request)
+  public function handleLogin(Request $request)
 {
     try {
         $input = $request->input('email'); 
@@ -30,36 +30,48 @@ class AuthController extends Controller
         $fieldType = filter_var($input, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
         // Validasi input
-        $validated = $request->validate([
+        $request->validate([
             'email' => 'required|string',
             'password' => 'required|string|min:8',
         ]);
+
+        // Ambil user terlebih dahulu
+        $user = \App\Models\User::where($fieldType, $input)->first();
+
+        // Cek apakah user ada
+        if (!$user) {
+            notify()->error('Akun tidak ditemukan.', 'Login Gagal');
+            return redirect()->route('main');
+        }
+
+        // Cek status user
+        if ($user->status !== 'active') {
+            notify()->error('Akun Anda belum aktif atau sedang ditolak.', 'Akses Ditolak');
+            return redirect()->route('main');
+        }
 
         // Coba autentikasi
         if (Auth::attempt([$fieldType => $input, 'password' => $password])) {
             $request->session()->regenerate();
 
-            $user = Auth::user();
-         
-            $role = $user->roles->pluck('name')->first(); // Ambil role
-        
+            $role = $user->roles->pluck('name')->first();
 
-            // Hanya admin yang bisa login ke dashboard
-            if ($role === 'admin') {
+            // Hanya admin atau super admin yang bisa login
+            if ($role === 'admin' || $role === 'super admin') {
                 notify()->success('You have successfully logged in as admin', 'Success');
                 return redirect()->route('show-dashboard');
             }
 
-            // Role bukan admin → logout dan tolak akses
+            // Jika bukan admin
             Auth::logout();
             notify()->error('Hanya admin yang dapat mengakses dashboard.', 'Akses Ditolak');
-            return redirect()->route('main')->with('error', 'Akun Anda tidak memiliki akses ke dashboard.');
+            return redirect()->route('main');
         }
 
-        // Jika login gagal
-        notify()->error('Kredensial salah. Periksa kembali email/username dan password.', 'Login Gagal');
-        return redirect()->route('main')->with('error', 'Login gagal. Silakan coba lagi.');
-        
+        // Jika password salah
+        notify()->error('Password salah. Silakan coba lagi.', 'Login Gagal');
+        return redirect()->route('main');
+
     } catch (\Illuminate\Validation\ValidationException $e) {
         notify()->error('Validasi gagal: ' . $e->getMessage(), 'Error Validasi');
         return redirect()->back()->withErrors($e->errors());

@@ -20,6 +20,7 @@ class UserSeed extends Seeder
                 'phone_number' => '081234567890',
                 'address' => 'Alamat bebas',
                 'password' => bcrypt('password123'),
+                'status' => 'pending'
             ],
             [
                 'username' => 'reva',
@@ -27,6 +28,7 @@ class UserSeed extends Seeder
                 'phone_number' => '081234567890',
                 'address' => 'Alamat bebas',
                 'password' => bcrypt('password123'),
+                'status' => 'pending'
             ],
             [
                 'username' => 'ferly123',
@@ -34,6 +36,7 @@ class UserSeed extends Seeder
                 'phone_number' => '081234567890',
                 'address' => 'Alamat bebas',
                 'password' => bcrypt('password123'),
+                'status' => 'pending'
             ],
             [
                 'username' => 'admin',
@@ -41,6 +44,7 @@ class UserSeed extends Seeder
                 'phone_number' => '081234567890',
                 'address' => 'Alamat bebas',
                 'password' => bcrypt('admin123'),
+                'status' => 'active'
             ]
         ]);
 
@@ -52,20 +56,16 @@ class UserSeed extends Seeder
             ],
             [
                 'user_id' => 2,
-                'role_id' => 1,
+                'role_id' => 2,
             ],
-            [
-                'user_id' => 2,
+               [
+                'user_id' => 3,
                 'role_id' => 2,
             ],
             [
                 'user_id' => 4,
                 'role_id' => 1,
             ],
-            [
-                'user_id' => 4,
-                'role_id' => 2,
-            ]
         ]);
     }
 }
