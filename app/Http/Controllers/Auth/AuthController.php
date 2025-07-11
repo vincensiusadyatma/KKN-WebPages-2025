@@ -20,7 +20,7 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-   public function handleLogin(Request $request)
+public function handleLogin(Request $request)
 {
     try {
         $input = $request->input('email'); 
@@ -30,111 +30,133 @@ class AuthController extends Controller
         $fieldType = filter_var($input, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
         // Validasi input
-        $validated = $request->validate([
+        $request->validate([
             'email' => 'required|string',
             'password' => 'required|string|min:8',
         ]);
+
+        // Ambil user
+        $user = \App\Models\User::where($fieldType, $input)->first();
+
+        // Jika user tidak ditemukan
+        if (!$user) {
+            return redirect()->route('main')->with('toast', [
+                'type' => 'error',
+                'message' => 'Akun tidak ditemukan.',
+            ]);
+        }
+
+        // Cek status user
+        if ($user->status !== 'active') {
+            return redirect()->route('main')->with('toast', [
+                'type' => 'error',
+                'message' => 'Akun Anda belum aktif atau sedang ditolak.',
+            ]);
+        }
 
         // Coba autentikasi
         if (Auth::attempt([$fieldType => $input, 'password' => $password])) {
             $request->session()->regenerate();
 
-            $user = Auth::user();
-         
-            $role = $user->roles->pluck('name')->first(); // Ambil role
-        
+            $role = $user->roles->pluck('name')->first();
 
-            // Hanya admin yang bisa login ke dashboard
-            if ($role === 'admin') {
-                notify()->success('You have successfully logged in as admin', 'Success');
-                return redirect()->route('show-dashboard');
+            // Hanya admin atau super admin yang bisa login
+            if ($role === 'admin' || $role === 'super admin') {
+                return redirect()->route('show-dashboard')->with('toast', [
+                    'type' => 'success',
+                    'message' => 'Anda berhasil login sebagai admin.',
+                ]);
             }
 
-            // Role bukan admin → logout dan tolak akses
+            // Jika bukan admin, logout
             Auth::logout();
-            notify()->error('Hanya admin yang dapat mengakses dashboard.', 'Akses Ditolak');
-            return redirect()->route('main')->with('error', 'Akun Anda tidak memiliki akses ke dashboard.');
+            return redirect()->route('main')->with('toast', [
+                'type' => 'error',
+                'message' => 'Hanya admin yang dapat mengakses dashboard.',
+            ]);
         }
 
-        // Jika login gagal
-        notify()->error('Kredensial salah. Periksa kembali email/username dan password.', 'Login Gagal');
-        return redirect()->route('main')->with('error', 'Login gagal. Silakan coba lagi.');
-        
+        // Jika password salah
+        return redirect()->route('main')->with('toast', [
+            'type' => 'error',
+            'message' => 'Password salah. Silakan coba lagi.',
+        ]);
+
     } catch (\Illuminate\Validation\ValidationException $e) {
-        notify()->error('Validasi gagal: ' . $e->getMessage(), 'Error Validasi');
-        return redirect()->back()->withErrors($e->errors());
+        return redirect()->back()
+            ->withErrors($e->errors())
+            ->with('toast', [
+                'type' => 'error',
+                'message' => 'Validasi gagal: ' . $e->getMessage(),
+            ]);
     } catch (\Exception $e) {
-        notify()->error('Terjadi kesalahan. Coba lagi nanti.', 'Error');
-        return redirect()->route('main')->with('error', 'Terjadi kesalahan sistem.');
+        return redirect()->route('main')->with('toast', [
+            'type' => 'error',
+            'message' => 'Terjadi kesalahan sistem.',
+        ]);
     }
 }
 
-   public function handleLogOut(Request $request)
-    {
-
-        Auth::logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-       
-        notify()->success('You have successfully logged out.');
-        return redirect()->route('main')->with('success', 'Anda telah berhasil logout.');
-    }
-    
-
-    public function handleRegister(Request $request)
+ public function handleLogOut(Request $request)
 {
-    // Validasi input form
+    Auth::logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect()->route('main')->with('toast', [
+        'type' => 'success',
+        'message' => 'Anda telah berhasil logout.',
+    ]);
+}
+
+
+public function handleRegister(Request $request)
+{
     $credentials = $request->validate([
+        'username' => 'required|string|max:50|unique:users',
         'email' => 'required|string|email|max:255|unique:users',
+        'phone' => 'required|string|max:15',
+        'birthdate' => 'required|date',
         'password' => 'required|string|min:8|confirmed',
-    ], [
-        'email.required' => 'Email tidak boleh kosong.',
-        'email.email' => 'Format email tidak valid.',
-        'email.unique' => 'Email sudah terdaftar.',
-        'password.required' => 'Password tidak boleh kosong.',
-        'password.min' => 'Password harus memiliki minimal 8 karakter.',
-        'password.confirmed' => 'Password konfirmasi tidak sesuai.',
     ]);
 
-    // Mulai transaksi database
     DB::beginTransaction();
 
     try {
-        // Buat user baru
+        // Buat user dengan status pending
         $user = User::create([
+            'username' => $request->username,
             'email' => $request->email,
+            'phone_number' => $request->phone,
+            'birthdate' => $request->birthdate,
             'password' => bcrypt($request->password),
-            'status' => 'active',
+            'status' => 'pending',
         ]);
 
-        // Assign default role (misal role_id 2 = user biasa)
+        // Assign role default
         DB::table('role_ownerships')->insert([
             'user_id' => $user->id,
-            'role_id' => 2,
+            'role_id' => 2, // misalnya 'user biasa'
         ]);
 
-        // Login otomatis setelah registrasi
-        Auth::login($user);
-
-        // Commit transaksi
         DB::commit();
 
-        // Notifikasi sukses
-        notify()->success('Registrasi berhasil. Selamat datang!', 'Sukses');
-
-        // Redirect ke halaman utama
-        return redirect()->route('main');
+        // Tidak langsung login — beri notifikasi saja
+        return redirect()->route('main')->with('toast', [
+            'type' => 'success',
+            'message' => 'Registrasi berhasil! Tunggu persetujuan admin sebelum bisa login.',
+        ]);
     } catch (\Throwable $th) {
-        // Rollback jika terjadi error
         DB::rollBack();
-
-        // Simpan log error
         Log::error('Registration Error: ' . $th->getMessage());
 
-        // Redirect kembali ke form register dengan pesan error
-        return redirect()->route('show-register')->withErrors(['error' => 'Registrasi gagal. Silakan coba lagi.']);
+        return redirect()->route('show-register')
+            ->withErrors(['error' => 'Registrasi gagal. Silakan coba lagi.'])
+            ->with('toast', [
+                'type' => 'error',
+                'message' => 'Terjadi kesalahan saat registrasi.',
+            ]);
     }
 }
 
