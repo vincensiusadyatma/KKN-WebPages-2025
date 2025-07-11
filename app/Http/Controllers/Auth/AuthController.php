@@ -111,46 +111,41 @@ public function handleLogin(Request $request)
 }
 
 
- public function handleRegister(Request $request)
+public function handleRegister(Request $request)
 {
-    // Validasi input form
     $credentials = $request->validate([
+        'username' => 'required|string|max:50|unique:users',
         'email' => 'required|string|email|max:255|unique:users',
+        'phone' => 'required|string|max:15',
+        'birthdate' => 'required|date',
         'password' => 'required|string|min:8|confirmed',
-    ], [
-        'email.required' => 'Email tidak boleh kosong.',
-        'email.email' => 'Format email tidak valid.',
-        'email.unique' => 'Email sudah terdaftar.',
-        'password.required' => 'Password tidak boleh kosong.',
-        'password.min' => 'Password harus memiliki minimal 8 karakter.',
-        'password.confirmed' => 'Password konfirmasi tidak sesuai.',
     ]);
 
     DB::beginTransaction();
 
     try {
-        // Buat user baru
+        // Buat user dengan status pending
         $user = User::create([
+            'username' => $request->username,
             'email' => $request->email,
+            'phone_number' => $request->phone,
+            'birthdate' => $request->birthdate,
             'password' => bcrypt($request->password),
-            'status' => 'active',
+            'status' => 'pending',
         ]);
 
-        // Assign default role
+        // Assign role default
         DB::table('role_ownerships')->insert([
             'user_id' => $user->id,
-            'role_id' => 2, // misalnya role_id 2 adalah 'user'
+            'role_id' => 2, // misalnya 'user biasa'
         ]);
-
-        // Login otomatis
-        Auth::login($user);
 
         DB::commit();
 
-        // Beri toast sukses dan redirect
+        // Tidak langsung login — beri notifikasi saja
         return redirect()->route('main')->with('toast', [
             'type' => 'success',
-            'message' => 'Registrasi berhasil. Selamat datang!',
+            'message' => 'Registrasi berhasil! Tunggu persetujuan admin sebelum bisa login.',
         ]);
     } catch (\Throwable $th) {
         DB::rollBack();
@@ -164,5 +159,6 @@ public function handleLogin(Request $request)
             ]);
     }
 }
+
 
 }

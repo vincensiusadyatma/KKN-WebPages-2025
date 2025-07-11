@@ -27,7 +27,7 @@ Route::middleware(['CheckRole:admin,super admin'])->prefix('dashboard')->group(f
     Route::get('/blog', [DashboardController::class, 'showBlog'])->name('show-blog');
     // Route::get('/blog/{id}', [DashboardController::class, 'showDashboard'])->name('show-blog-detail');
     Route::get('/blog/create', [DashboardController::class, 'showCreateBlog'])->name('show-create-blog');
-    Route::get('/blog/create/handle', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
+    // Route::get('/blog/create/handle', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
     // Route::get('/blog/update/{id}', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
     // Route::get('/blog/delete/{id}', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
 

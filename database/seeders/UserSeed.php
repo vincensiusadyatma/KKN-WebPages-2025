@@ -13,40 +13,45 @@ class UserSeed extends Seeder
      */
     public function run(): void
     {
-           DB::table('users')->insert([
-            [
-                'username' => 'vitovit',
-                'email' => 'adyatmavincencius@gmail.com',
-                'phone_number' => '081234567890',
-                'address' => 'Alamat bebas',
-                'password' => bcrypt('password123'),
-                'status' => 'pending'
-            ],
-            [
-                'username' => 'reva',
-                'email' => 'reva@gmail.com',
-                'phone_number' => '081234567890',
-                'address' => 'Alamat bebas',
-                'password' => bcrypt('password123'),
-                'status' => 'pending'
-            ],
-            [
-                'username' => 'ferly123',
-                'email' => 'ferli@gmail.com',
-                'phone_number' => '081234567890',
-                'address' => 'Alamat bebas',
-                'password' => bcrypt('password123'),
-                'status' => 'pending'
-            ],
-            [
-                'username' => 'admin',
-                'email' => 'admin@gmail.com',
-                'phone_number' => '081234567890',
-                'address' => 'Alamat bebas',
-                'password' => bcrypt('admin123'),
-                'status' => 'active'
-            ]
-        ]);
+          DB::table('users')->insert([
+    [
+        'username' => 'vitovit',
+        'email' => 'adyatmavincencius@gmail.com',
+        'phone_number' => '081234567890',
+        'address' => 'Alamat bebas',
+        'birthdate' => '2004-02-09', // 🎂 tanggal lahir ditambahkan
+        'password' => bcrypt('password123'),
+        'status' => 'pending'
+    ],
+    [
+        'username' => 'reva',
+        'email' => 'reva@gmail.com',
+        'phone_number' => '081234567890',
+        'address' => 'Alamat bebas',
+        'birthdate' => '2005-06-21',
+        'password' => bcrypt('password123'),
+        'status' => 'pending'
+    ],
+    [
+        'username' => 'ferly123',
+        'email' => 'ferli@gmail.com',
+        'phone_number' => '081234567890',
+        'address' => 'Alamat bebas',
+        'birthdate' => '2003-11-10',
+        'password' => bcrypt('password123'),
+        'status' => 'pending'
+    ],
+    [
+        'username' => 'admin',
+        'email' => 'admin@gmail.com',
+        'phone_number' => '081234567890',
+        'address' => 'Alamat bebas',
+        'birthdate' => '2000-01-01',
+        'password' => bcrypt('admin123'),
+        'status' => 'active'
+    ]
+]);
+
 
         // Insert roles for users
         DB::table('role_ownerships')->insert([

@@ -29,11 +29,7 @@
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <p class="text-sm text-gray-500">Nomor Telepon</p>
-                <p class="font-medium text-gray-700">081234567890</p>
-            </div>
-            <div>
-                <p class="text-sm text-gray-500">Alamat</p>
-                <p class="font-medium text-gray-700">Alamat bebas</p>
+                <p class="font-medium text-gray-700">{{ $user->phone_number }}</p>
             </div>
         </div>
 
