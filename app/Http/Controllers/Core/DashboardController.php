@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Core;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -98,4 +99,38 @@ class DashboardController extends Controller
             'message' => 'Status berhasil diubah menjadi "' . $status . '".',
         ]);
     }
+
+    public function deleteAdmin($id)
+{
+    try {
+        $user = User::findOrFail($id);
+$userAuth = Auth::user();
+        // Cegah pengguna menghapus dirinya sendiri (opsional)
+        if ($userAuth->id == $user->id) {
+            return redirect()->back()->with('toast', [
+                'type' => 'error',
+                'message' => 'Anda tidak bisa menghapus akun Anda sendiri.',
+            ]);
+        }
+
+        DB::transaction(function () use ($user) {
+            // Hapus relasi role
+            $user->roles()->detach();
+
+            // Hapus user
+            $user->delete();
+        });
+
+        return redirect()->route('show-admin-management')->with('toast', [
+            'type' => 'success',
+            'message' => 'Akun berhasil dihapus.',
+        ]);
+
+    } catch (\Exception $e) {
+        return redirect()->back()->with('toast', [
+            'type' => 'error',
+            'message' => 'Gagal menghapus akun. Silakan coba lagi.',
+        ]);
+    }
+}
 }

@@ -30,7 +30,7 @@ Route::middleware(['CheckRole:admin,super admin'])->prefix('dashboard')->group(f
     // Route::get('/blog/create/handle', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
     // Route::get('/blog/update/{id}', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
     // Route::get('/blog/delete/{id}', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
-
+Route::delete('/dashboard/admin/{id}/delete', [DashboardController::class, 'deleteAdmin'])->name('delete-admin');
     Route::get('/berita', [DashboardController::class, 'showBerita'])->name('show-berita');
     Route::get('/admin_management', [DashboardController::class, 'showAdminManagement'])->name('show-admin-management');
     Route::get('/admin_management/user/{id}', [DashboardController::class, 'showAdminDetails'])->name('show-admin-detail');
