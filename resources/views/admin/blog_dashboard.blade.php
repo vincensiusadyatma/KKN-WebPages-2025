@@ -5,37 +5,42 @@
 @section('content')
 <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold text-gray-800">Blog Terbaru</h1>
-
-    {{-- Tombol Create Blog --}}
     <a href="/dashboard/blog/create" class="inline-block px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-md shadow hover:bg-green-700 transition">
         + Buat Blog
     </a>
 </div>
 
-{{-- Card List Blog --}}
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    {{-- Card 1 --}}
-    <div class="bg-white rounded-lg shadow p-4">
-        <img src="{{ asset('img/assets/blog-thumb-1.jpg') }}" alt="Blog Thumbnail" class="rounded-md mb-4 w-full h-40 object-cover">
-        <h3 class="text-lg font-bold text-gray-800 mb-2">Judul Blog Pertama</h3>
-        <p class="text-sm text-gray-600 mb-4">Ini adalah cuplikan konten blog yang menggambarkan isi artikel secara singkat...</p>
-        <a href="#" class="text-indigo-600 text-sm hover:underline">Lihat Selengkapnya</a>
-    </div>
+    @foreach ($blogs as $blog)
+    <div class="bg-white rounded-lg shadow p-4 mb-6 flex flex-col justify-between h-full">
+        <img src="{{ $blog->thumbnail_path }}" alt="Thumbnail" class="w-full h-48 object-cover rounded mb-4">
+        
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ $blog->title }}</h3>
 
-    {{-- Card 2 --}}
-    <div class="bg-white rounded-lg shadow p-4">
-        <img src="{{ asset('img/assets/blog-thumb-2.jpg') }}" alt="Blog Thumbnail" class="rounded-md mb-4 w-full h-40 object-cover">
-        <h3 class="text-lg font-bold text-gray-800 mb-2">Tips Menjadi Developer</h3>
-        <p class="text-sm text-gray-600 mb-4">Beberapa tips dan trik untuk mengembangkan karier sebagai programmer pemula...</p>
-        <a href="#" class="text-indigo-600 text-sm hover:underline">Lihat Selengkapnya</a>
-    </div>
+        @php
+            $allowedTags = '<b><i><u><strong><em>';
+            $lines = preg_split('/(\r\n|\r|\n)/', strip_tags($blog->preview ?? '', $allowedTags));
+            $lines = array_filter(array_map('trim', $lines));
+            $displayed = array_slice($lines, 0, 2); // Ambil 2 baris saja
+            $isTrimmed = count($lines) > 2 || str_ends_with(trim($blog->preview), '...');
+        @endphp
 
-    {{-- Card 3 --}}
-    <div class="bg-white rounded-lg shadow p-4">
-        <img src="{{ asset('img/assets/blog-thumb-3.jpg') }}" alt="Blog Thumbnail" class="rounded-md mb-4 w-full h-40 object-cover">
-        <h3 class="text-lg font-bold text-gray-800 mb-2">Headline Minggu Ini</h3>
-        <p class="text-sm text-gray-600 mb-4">Berita utama dan tren teknologi yang sedang berkembang dalam sepekan terakhir...</p>
-        <a href="#" class="text-indigo-600 text-sm hover:underline">Lihat Selengkapnya</a>
+        <div class="text-sm text-gray-600 leading-relaxed break-words">
+            @foreach ($displayed as $line)
+                <p class="mb-2">{!! $line !!}</p>
+            @endforeach
+
+            @if ($isTrimmed)
+                <p class="text-gray-500">...</p>
+            @endif
+        </div>
+
+        {{-- Tombol View Details --}}
+        <a href="{{ route('blog.detail', ['id' => $blog->id]) }}" 
+           class="mt-4 inline-block text-center px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 transition">
+            View Details
+        </a>
     </div>
+    @endforeach
 </div>
 @endsection

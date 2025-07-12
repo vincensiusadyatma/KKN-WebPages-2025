@@ -6,7 +6,8 @@
 <div class="max-w-5xl mx-auto mt-8 px-4 sm:px-6 lg:px-8">
     <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-2">Buat Blog Baru</h2>
 
-    <form action="#" method="POST" enctype="multipart/form-data" class="space-y-6">
+   <form action="{{ route('store-blog') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+
         @csrf
 
         {{-- Judul Blog --}}
@@ -51,17 +52,32 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
     <script>
-      $(document).ready(function() {
-        $('#summernote').summernote({
-          height: 250,
-          placeholder: 'Tulis konten blog di sini...',
-          toolbar: [
-            ['style', ['bold', 'italic', 'underline', 'clear']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['insert', ['link', 'picture', 'video']],
-            ['view', ['codeview']]
-          ]
-        });
-      });
+    $('#summernote').summernote({
+  height: 250,
+  placeholder: 'Tulis konten blog di sini...',
+  toolbar: [
+    ['style', ['bold', 'italic', 'underline', 'clear']],
+    ['para', ['ul', 'ol', 'paragraph']],
+    ['misc', ['codeview']]
+  ],
+  disableDragAndDrop: true, // Disable drag-drop gambar
+  callbacks: {
+    onImageUpload: function() {},       // Disable upload image
+    onMediaDelete: function() {},       // Disable media delete
+    onPaste: function(e) {
+      // Cegah paste image
+      var clipboardData = e.originalEvent.clipboardData;
+      if (clipboardData && clipboardData.items) {
+        for (var i = 0; i < clipboardData.items.length; i++) {
+          if (clipboardData.items[i].type.indexOf("image") !== -1) {
+            e.preventDefault();
+            return false;
+          }
+        }
+      }
+    }
+  }
+});
+
     </script>
 @endsection
