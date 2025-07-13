@@ -30,10 +30,11 @@
     <!-- User Profile -->
     <div class="flex items-center space-x-3">
       <div class="hidden md:flex flex-col items-end leading-tight">
-        <span class="font-semibold">Vito</span>
-        <span class="text-sm text-gray-600">Student</span>
+        <span class="font-semibold">{{ $user->username }}</span>
+        <span class="text-sm text-gray-600">{{ $user->roles->first()?->name }}</span>
       </div>
-      <img src="https://img.freepik.com/free-photo/african-woman-studio-white-wall-woman-white-shirt_1157-47613.jpg?size=626&ext=jpg&ga=GA1.2.516224105.1653748033" alt="User" class="h-12 w-12 rounded-full object-cover" />
+      <img src="{{ asset('img/profile1.png') }}" alt="User Photo" class="h-12 w-12 rounded-full object-cover border border-gray-300" />
+
     </div>
 
     <!-- Logout Button -->

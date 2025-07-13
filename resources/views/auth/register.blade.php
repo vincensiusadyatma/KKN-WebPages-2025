@@ -20,7 +20,7 @@
         {{-- Logo --}}
         <div class="py-4 flex items-center">
             <img src="{{ asset('img/dusun-logo.png') }}" alt="Logo Dusun" class="w-10 h-10 mr-2">
-            <h1 class="text-2xl font-bold" style="color: var(--primary-color)">Gayam</h1>
+            <h1 class="text-2xl font-bold" style="color: var(--primary-color)">Parangan</h1>
         </div>
 
         {{-- Heading --}}

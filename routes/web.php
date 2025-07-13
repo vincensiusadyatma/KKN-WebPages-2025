@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Core\BlogController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Core\DashboardController;
 
@@ -24,16 +25,33 @@ Route::get('/logout', [AuthController::class, 'handleLogout'])->name('handle-log
 Route::middleware(['CheckRole:admin,super admin'])->prefix('dashboard')->group(function () {
     Route::get('/', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
 
-    Route::get('/blog', [DashboardController::class, 'showBlog'])->name('show-blog');
+  
     // Route::get('/blog/{id}', [DashboardController::class, 'showDashboard'])->name('show-blog-detail');
-    Route::get('/blog/create', [DashboardController::class, 'showCreateBlog'])->name('show-create-blog');
+  
     // Route::get('/blog/create/handle', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
     // Route::get('/blog/update/{id}', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
     // Route::get('/blog/delete/{id}', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
-Route::delete('/dashboard/admin/{id}/delete', [DashboardController::class, 'deleteAdmin'])->name('delete-admin');
+    Route::delete('/dashboard/admin/{id}/delete', [DashboardController::class, 'deleteAdmin'])->name('delete-admin');
     Route::get('/berita', [DashboardController::class, 'showBerita'])->name('show-berita');
     Route::get('/admin_management', [DashboardController::class, 'showAdminManagement'])->name('show-admin-management');
     Route::get('/admin_management/user/{id}', [DashboardController::class, 'showAdminDetails'])->name('show-admin-detail');
-  Route::post('/admin_management/user/{user:email}/handlestatus', [DashboardController::class, 'changeStatus'])
-    ->name('change-admin-status');
+    Route::post('/admin_management/user/{user:email}/handlestatus', [DashboardController::class, 'changeStatus'])->name('change-admin-status');
+   
+    Route::middleware(['CheckRole:admin,super admin'])->prefix('blog')->group(function () {
+        Route::get('/', [BlogController::class, 'showBlog'])->name('show-blog');
+        Route::get('/create', [DashboardController::class, 'showCreateBlog'])->name('show-create-blog');
+        Route::post('/create/new', [BlogController::class, 'storeBlog'])->name('store-blog');
+        Route::get('/{id}/edit', [BlogController::class, 'edit'])->name('blog.edit');
+        Route::get('/{id}', [BlogController::class, 'showDetail'])->name('blog.detail');
+        Route::put('{id}/update', [BlogController::class, 'update'])->name('blog.update');
+        Route::delete('{id}/delete', [BlogController::class, 'destroy'])->name('blog.destroy');
+        
+        Route::get('/main/{id}', [BlogController::class, 'show'])->name('blog.detail.main');
+        Route::get('/main', [BlogController::class, 'index'])->name('blog.index');
+        Route::get('/main/search', [BlogController::class, 'search'])->name('blog.search');
+    });
 });
+
+  Route::get('/blog/main/{id}', [BlogController::class, 'showBlogDetail'])->name('blog.detail.main');
+  Route::get('/blog/main', [BlogController::class, 'indexBlog'])->name('blog.index');
+Route::get('/search', [BlogController::class, 'search'])->name('blog.search');
