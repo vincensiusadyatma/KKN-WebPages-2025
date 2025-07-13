@@ -1,6 +1,6 @@
 @extends('template.main_template')
 
-@section('title', 'Gayam-Gayamharjo')
+@section('title', 'Parangan-Gayamharjo')
 
 @section('content')
 
@@ -9,8 +9,8 @@
          style="background-image: url('{{ asset('img/gayamharjo-login-bg.png') }}');">
     <div class="absolute inset-0 bg-black/50"></div>
     <div class="relative z-10 p-8">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">Explore Gayam</h1>
-        <p class="mb-6">Start your journey and find unforgettable experiences wherever you go.</p>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Explore Parangan</h1>
+        <p class="mb-6">Sebuah dusun kecil di Prambanan yang menyimpan kehangatan, keindahan, dan keramahan Jogja</p>
         <a href="#" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-full">Get Started</a>
     </div>
 </section>

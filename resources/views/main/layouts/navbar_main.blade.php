@@ -8,14 +8,14 @@
                     d="M9 17H15M3 14.6V12.13C3 10.98 3 10.41 3.15 9.88C3.28 9.41 3.5 8.97 3.78 8.58C4.11 8.14 4.56 7.78 5.47 7.08L8.07 5.06C9.48 3.96 10.18 3.42 10.95 3.21C11.64 3.02 12.36 3.02 13.05 3.21C13.82 3.42 14.52 3.96 15.93 5.06L18.53 7.08C19.44 7.78 19.89 8.14 20.22 8.58C20.51 8.97 20.72 9.41 20.85 9.88C21 10.41 21 10.98 21 12.13V14.6C21 16.84 21 17.96 20.56 18.82C20.18 19.57 19.57 20.18 18.82 20.56C17.96 21 16.84 21 14.6 21H9.4C7.16 21 6.04 21 5.18 20.56C4.43 20.18 3.82 19.57 3.44 18.82C3 17.96 3 16.84 3 14.6Z" />
             </svg> --}}
             <img src="{{ asset('img/dusun-logo.png')}}" alt="" width="70px" height="70px">
-            <span class="text-2xl font-bold text-lime-700">Dusun Gayam</span>
+            <span class="text-2xl font-bold text-lime-700">Dusun Parangan</span>
         </div>
 
         <!-- Menu Tengah -->
         <ul class="absolute left-1/2 transform -translate-x-1/2 hidden md:flex space-x-8 text-gray-600 font-medium">
-            <li><a href="#" class="hover:text-lime-600 transition">Home</a></li>
+            <li><a href="{{ route('main') }}" class="hover:text-lime-600 transition">Home</a></li>
             <li><a href="#" class="hover:text-lime-600 transition">About</a></li>
-            <li><a href="#" class="hover:text-lime-600 transition">Blog</a></li>
+            <li><a href="{{ route('blog.index') }}" class="hover:text-lime-600 transition">Blog</a></li>
             <li><a href="#" class="hover:text-lime-600 transition">Berita</a></li>
         </ul>
 

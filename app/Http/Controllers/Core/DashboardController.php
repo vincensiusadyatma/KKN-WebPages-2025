@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core;
 
+use App\Models\Blog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -10,17 +11,30 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function showDashboard()
-    {
-        $user = Auth::user();
+ public function showDashboard()
+{
+    $user = Auth::user();
 
-        return view('admin.dashboard', [
-            'jumlahBlog' => 12,
-            'jumlahBerita' => 8,
-            'dibuatOlehSaya' => 5,
-            'jumlahAdmin' => 3,
-        ]);
-    }
+    // Hitung jumlah semua blog
+    $jumlahBlog = Blog::count();
+
+    // Hitung konten yang dibuat oleh user ini (relasi blog_creators)
+    $dibuatOlehSaya = $user->blogs->count();
+
+    // Hitung jumlah admin berdasarkan role many-to-many
+    $jumlahAdmin = User::whereHas('roles', function ($query) {
+        $query->where('name', 'admin');
+    })->count();
+
+    return view('admin.dashboard', [
+        'jumlahBlog' => $jumlahBlog,
+        'jumlahBerita' => 8, // masih statis seperti permintaan
+        'dibuatOlehSaya' => $dibuatOlehSaya,
+        'jumlahAdmin' => $jumlahAdmin,
+        'user' => $user,
+        'blogs' => Blog::latest()->take(10)->get(), // opsional, jika bagian bawah dashboard butuh
+    ]);
+}
 
     public function showBlog()
     {
