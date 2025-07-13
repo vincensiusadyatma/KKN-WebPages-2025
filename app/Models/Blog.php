@@ -10,6 +10,7 @@ class Blog extends Model
 protected $fillable = [
     'title',
     'thumbnail_path',
+    'category',
     'content_path',
 ];
 

@@ -25,6 +25,22 @@
                 required>
         </div>
 
+        {{-- Kategori --}}
+        <div>
+            <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+            <select 
+                name="category" 
+                id="category"
+                required
+                class="w-full px-3 py-2 rounded-md bg-white text-gray-800 border border-gray-300 focus:border-green-500 focus:ring-0 focus:outline-none">
+                <option value="">-- Pilih Kategori --</option>
+                <option value="Teknologi" {{ $blog->category == 'Teknologi' ? 'selected' : '' }}>Teknologi</option>
+                <option value="Budaya" {{ $blog->category == 'Budaya' ? 'selected' : '' }}>Budaya</option>
+                <option value="Pendidikan" {{ $blog->category == 'Pendidikan' ? 'selected' : '' }}>Pendidikan</option>
+                <option value="Lingkungan" {{ $blog->category == 'Lingkungan' ? 'selected' : '' }}>Lingkungan</option>
+            </select>
+        </div>
+
         {{-- Thumbnail --}}
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Thumbnail</label>
@@ -61,21 +77,21 @@
 @endsection
 
 @section('scripts')
-<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
 
-<script>
-    $(document).ready(function() {
-        $('#summernote').summernote({
-            height: 300,
-            toolbar: [
-                ['style', ['bold', 'italic', 'underline', 'clear']],
-                ['font', ['strikethrough']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['view', ['codeview']]
-            ]
+    <script>
+        $(document).ready(function() {
+            $('#summernote').summernote({
+                height: 300,
+                toolbar: [
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['view', ['codeview']]
+                ]
+            });
         });
-    });
-</script>
+    </script>
 @endsection

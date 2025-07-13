@@ -51,67 +51,85 @@ public function indexBlog()
     return view('main.blog_details_main', compact('blog', 'content'));
 }
 
-     // Fitur pencarian blog berdasarkan judul
-    public function search(Request $request)
-    {
-        $request->validate([
-            'search' => 'required|string|max:100',
-        ]);
+  public function search(Request $request)
+{
+ 
+    $searchTerm = $request->input('search');
+    $category = $request->input('category');
 
-        $searchTerm = $request->input('search');
+    $query = Blog::query();
 
-        $blogs = Blog::where('title', 'like', '%' . $searchTerm . '%')
-                     ->latest()
-                     ->paginate(6)
-                     ->appends(['search' => $searchTerm]); // agar pagination tetap bawa keyword
-
-        return view('main.blog.index', compact('blogs'));
+    if (!empty($searchTerm)) {
+        $query->where('title', 'like', '%' . $searchTerm . '%');
     }
-    public function storeBlog(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'thumbnail' => 'required|image|mimes:jpg,jpeg,png',
-            'editordata' => 'required|string',
-        ]);
 
-        $user = Auth::user();
-
-        $slug = Str::slug($request->title);
-        $thumbnailFolder = 'blog_thumbnails';
-        $contentFolder = 'blogs';
-        $txtFilename = $slug . '.txt';
-        $thumbFilename = $slug . '.' . $request->file('thumbnail')->getClientOriginalExtension();
-
-        $txtPath = $contentFolder . '/' . $txtFilename;
-        $thumbPath = $thumbnailFolder . '/' . $thumbFilename;
-
-        // Simpan thumbnail ke storage/public
-        $request->file('thumbnail')->storeAs('public/' . $thumbnailFolder, $thumbFilename);
-
-        // Simpan konten HTML ke storage/app/blogs/slug.txt
-        Storage::disk('local')->put($txtPath, $request->editordata);
-
-        // Simpan ke database
-        $blog = Blog::create([
-            'title' => $request->title,
-            'thumbnail_path' => $thumbPath,
-            'content_path' => $txtPath,
-        ]);
-
-        // Simpan relasi blog dan user
-        DB::table('blog_creators')->insert([
-            'user_id' => $user->id,
-            'blog_id' => $blog->id,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        return redirect()->route('show-blog')->with('toast', [
-            'type' => 'success',
-            'message' => 'Blog berhasil disimpan.',
-        ]);
+    if (!empty($category)) {
+        $query->where('category', $category);
     }
+
+    $blogs = $query->with('authors')->latest()->paginate(6)->appends($request->only(['search', 'category']));
+
+    $blogs->transform(function ($blog) {
+        $html = Storage::disk('local')->exists($blog->content_path)
+            ? Storage::disk('local')->get($blog->content_path)
+            : '';
+        $blog->thumbnail_path = asset('storage/' . $blog->thumbnail_path);
+        $blog->preview = Str::limit(strip_tags($html), 200, '...');
+        return $blog;
+    });
+
+    return view('main.blog_main', compact('blogs'));
+}
+
+
+   public function storeBlog(Request $request)
+{
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'category' => 'required|string|max:100', // validasi kategori
+        'thumbnail' => 'required|image|mimes:jpg,jpeg,png',
+        'editordata' => 'required|string',
+    ]);
+
+    $user = Auth::user();
+
+    $slug = Str::slug($request->title);
+    $thumbnailFolder = 'blog_thumbnails';
+    $contentFolder = 'blogs';
+    $txtFilename = $slug . '.txt';
+    $thumbFilename = $slug . '.' . $request->file('thumbnail')->getClientOriginalExtension();
+
+    $txtPath = $contentFolder . '/' . $txtFilename;
+    $thumbPath = $thumbnailFolder . '/' . $thumbFilename;
+
+    // Simpan thumbnail
+    $request->file('thumbnail')->storeAs('public/' . $thumbnailFolder, $thumbFilename);
+
+    // Simpan konten ke file
+    Storage::disk('local')->put($txtPath, $request->editordata);
+
+    // Simpan ke database
+    $blog = Blog::create([
+        'title' => $request->title,
+        'category' => $request->category, // disimpan di sini
+        'thumbnail_path' => $thumbPath,
+        'content_path' => $txtPath,
+    ]);
+
+    // Relasi blog dan author
+    DB::table('blog_creators')->insert([
+        'user_id' => $user->id,
+        'blog_id' => $blog->id,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    return redirect()->route('show-blog')->with('toast', [
+        'type' => 'success',
+        'message' => 'Blog berhasil disimpan.',
+    ]);
+}
+
 
 public function showBlog()
 {
@@ -178,6 +196,7 @@ public function update(Request $request, $id)
 {
     $request->validate([
         'title' => 'required|string|max:255',
+        'category' => 'required|string|max:100',
         'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png',
         'editordata' => 'required|string',
     ]);
@@ -186,7 +205,7 @@ public function update(Request $request, $id)
     $slug = Str::slug($request->title);
     $txtPath = 'blogs/' . $slug . '.txt';
 
-    // Update konten file
+    // Simpan konten HTML ke file .txt
     Storage::disk('local')->put($txtPath, $request->editordata);
 
     $thumbPath = $blog->thumbnail_path;
@@ -196,8 +215,10 @@ public function update(Request $request, $id)
         $request->file('thumbnail')->storeAs('public/blog_thumbnails', $thumbFilename);
     }
 
+    // Update database
     $blog->update([
         'title' => $request->title,
+        'category' => $request->category,
         'thumbnail_path' => $thumbPath,
         'content_path' => $txtPath,
     ]);
@@ -207,6 +228,7 @@ public function update(Request $request, $id)
         'message' => 'Blog berhasil diperbarui.',
     ]);
 }
+
 
 public function destroy($id)
 {

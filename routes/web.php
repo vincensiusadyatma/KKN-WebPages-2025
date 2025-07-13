@@ -54,4 +54,4 @@ Route::middleware(['CheckRole:admin,super admin'])->prefix('dashboard')->group(f
 
   Route::get('/blog/main/{id}', [BlogController::class, 'showBlogDetail'])->name('blog.detail.main');
   Route::get('/blog/main', [BlogController::class, 'indexBlog'])->name('blog.index');
-  Route::get('/blog/main/search', [BlogController::class, 'search'])->name('blog.search');
+Route::get('/search', [BlogController::class, 'search'])->name('blog.search');

@@ -11,10 +11,21 @@
             <p class="text-gray-600 text-sm">Temukan artikel dan cerita terbaru dari desa kami.</p>
         </div>
 
+        {{-- Info Filter Aktif --}}
+        @if (request('search') || request('category'))
+            <div class="mb-4 text-center text-sm text-gray-600">
+                Menampilkan hasil
+                @if(request('search')) pencarian untuk: <strong>"{{ request('search') }}"</strong>@endif
+                @if(request('category'))
+                    {{ request('search') ? ' dan ' : '' }}
+                    kategori: <strong>{{ request('category') }}</strong>
+                @endif
+            </div>
+        @endif
+
         {{-- Form Pencarian --}}
         <form action="{{ route('blog.search') }}" method="GET"
               class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-            
             {{-- Search Bar --}}
             <div class="relative w-full md:w-1/2">
                 <input type="text" name="search" value="{{ request('search') }}"
@@ -46,6 +57,12 @@
                     <img src="{{ $blog->thumbnail_path }}" alt="Thumbnail"
                          class="w-full h-48 object-cover rounded mb-4">
 
+                    {{-- Badge Kategori --}}
+                    <span class="inline-block mb-2 bg-lime-100 text-lime-800 text-xs font-semibold px-3 py-1 rounded-full w-fit">
+                        {{ $blog->category ?? 'Umum' }}
+                    </span>
+
+                    {{-- Info --}}
                     <div class="text-xs text-gray-500 mb-2 flex justify-between items-center">
                         <span>{{ \Carbon\Carbon::parse($blog->created_at)->translatedFormat('d F Y') }}</span>
                         <span>Oleh: {{ optional($blog->authors->first())->username ?? 'Anonim' }}</span>
@@ -71,10 +88,10 @@
             @endforelse
         </div>
 
-        {{-- Custom Pagination --}}
+        {{-- Pagination --}}
         @if ($blogs->hasPages())
             <div class="mt-12 text-center">
-                {{-- Tombol Previous dan Next --}}
+                {{-- Tombol Previous & Next --}}
                 <div class="inline-flex space-x-4 mb-2">
                     @if ($blogs->onFirstPage())
                         <span class="px-4 py-2 bg-gray-200 text-gray-500 rounded cursor-not-allowed">Previous</span>
@@ -91,7 +108,7 @@
                     @endif
                 </div>
 
-                {{-- Info Hasil --}}
+                {{-- Info Halaman --}}
                 <div class="text-sm text-gray-600 mt-1">
                     Menampilkan {{ $blogs->firstItem() }} - {{ $blogs->lastItem() }} dari total {{ $blogs->total() }} blog
                 </div>
