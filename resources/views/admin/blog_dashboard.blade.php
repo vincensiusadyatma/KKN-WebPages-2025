@@ -1,6 +1,6 @@
 @extends('template.admin_dashboard_template')
 
-@section('title', 'Dashboard')
+@section('title', 'Dashboard - Blog')
 
 @section('content')
 <div class="flex justify-between items-center mb-6">
@@ -21,7 +21,7 @@
             $allowedTags = '<b><i><u><strong><em>';
             $lines = preg_split('/(\r\n|\r|\n)/', strip_tags($blog->preview ?? '', $allowedTags));
             $lines = array_filter(array_map('trim', $lines));
-            $displayed = array_slice($lines, 0, 2); // Ambil 2 baris saja
+            $displayed = array_slice($lines, 0, 2);
             $isTrimmed = count($lines) > 2 || str_ends_with(trim($blog->preview), '...');
         @endphp
 
@@ -29,13 +29,11 @@
             @foreach ($displayed as $line)
                 <p class="mb-2">{!! $line !!}</p>
             @endforeach
-
             @if ($isTrimmed)
                 <p class="text-gray-500">...</p>
             @endif
         </div>
 
-        {{-- Tombol View Details --}}
         <a href="{{ route('blog.detail', ['id' => $blog->id]) }}" 
            class="mt-4 inline-block text-center px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 transition">
             View Details
@@ -43,4 +41,33 @@
     </div>
     @endforeach
 </div>
+
+@if ($blogs->hasPages())
+    <div class="mt-6 flex justify-center items-center space-x-2">
+        {{-- Tombol Sebelumnya --}}
+        @if ($blogs->onFirstPage())
+            <span class="px-3 py-1 bg-gray-200 text-gray-500 rounded">←</span>
+        @else
+            <a href="{{ $blogs->previousPageUrl() }}" class="px-3 py-1 bg-white border text-gray-700 rounded hover:bg-gray-100">←</a>
+        @endif
+
+        {{-- Nomor Halaman --}}
+        @for ($i = 1; $i <= $blogs->lastPage(); $i++)
+            @if ($i == $blogs->currentPage())
+                <span class="px-3 py-1 bg-lime-600 text-white rounded font-semibold">{{ $i }}</span>
+            @else
+                <a href="{{ $blogs->url($i) }}" class="px-3 py-1 bg-white border text-gray-700 rounded hover:bg-gray-100">{{ $i }}</a>
+            @endif
+        @endfor
+
+        {{-- Tombol Selanjutnya --}}
+        @if ($blogs->hasMorePages())
+            <a href="{{ $blogs->nextPageUrl() }}" class="px-3 py-1 bg-white border text-gray-700 rounded hover:bg-gray-100">→</a>
+        @else
+            <span class="px-3 py-1 bg-gray-200 text-gray-500 rounded">→</span>
+        @endif
+    </div>
+@endif
+
+
 @endsection

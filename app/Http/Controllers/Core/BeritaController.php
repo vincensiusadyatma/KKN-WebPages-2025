@@ -12,12 +12,12 @@ use Illuminate\Support\Facades\Storage;
 
 class BeritaController extends Controller
 {
-   public function index()
+  public function index()
 {
-    $beritas = Berita::latest()->get();
+    $beritas = Berita::latest()->paginate(6);
     $user = Auth::user();
 
-    $beritas->transform(function ($berita) {
+    $beritas->getCollection()->transform(function ($berita) {
         $html = Storage::disk('local')->exists($berita->content_path)
             ? Storage::disk('local')->get($berita->content_path)
             : '';
@@ -35,6 +35,7 @@ class BeritaController extends Controller
         'user' => $user,
     ]);
 }
+
 
      public function showCreate()
     {
@@ -185,6 +186,37 @@ class BeritaController extends Controller
 
         return view('main.berita_main', compact('beritas'));
     }
+
+
+    public function searchBerita(Request $request)
+{
+    $searchTerm = $request->input('search');
+    $category = $request->input('category');
+
+    $query = Berita::query();
+
+    if (!empty($searchTerm)) {
+        $query->where('title', 'like', '%' . $searchTerm . '%');
+    }
+
+    if (!empty($category)) {
+        $query->where('category', $category);
+    }
+
+    $beritas = $query->latest()->paginate(6)->appends($request->only(['search', 'category']));
+
+    $beritas->transform(function ($item) {
+        $html = Storage::disk('local')->exists($item->content_path)
+            ? Storage::disk('local')->get($item->content_path)
+            : '';
+        $item->thumbnail_url = asset('storage/' . $item->thumbnail_path);
+        $item->preview = Str::limit(strip_tags($html), 200, '...');
+        return $item;
+    });
+
+    return view('main.berita_main', compact('beritas'));
+}
+
 
 public function detailBerita($id)
 {

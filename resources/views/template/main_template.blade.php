@@ -16,7 +16,7 @@
 }
 
 .animate-infinite-scroll {
-    animation: infinite-scroll 20s linear infinite;
+    animation: infinite-scroll 40s linear infinite;
 }
 </style>
 <body class="bg-white text-gray-900 font-sans leading-normal">

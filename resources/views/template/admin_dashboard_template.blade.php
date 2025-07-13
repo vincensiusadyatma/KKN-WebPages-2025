@@ -23,6 +23,20 @@
             @yield('content')
         </main>
 
+       {{-- Footer --}}
+<footer class="bg-white border-t border-gray-200 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+        <div class="mb-2 md:mb-0">
+            <span class="text-gray-600">&copy; {{ date('Y') }} <span class="text-purple-600 font-semibold">Gayamharjo</span>. All rights reserved.</span>
+        </div>
+        {{-- <div class="space-x-4">
+            <a href="#" class="hover:text-purple-600 transition">Privacy</a>
+            <a href="#" class="hover:text-purple-600 transition">Terms</a>
+            <a href="#" class="hover:text-purple-600 transition">Support</a>
+        </div> --}}
+    </div>
+</footer>
+
         {{-- Toast Notification --}}
         @if(session('toast'))
             <div 

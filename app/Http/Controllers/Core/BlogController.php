@@ -134,21 +134,19 @@ public function indexBlog()
 public function showBlog()
 {
     $user = Auth::user();
-    $blogs = Blog::latest()->get();
 
-    $blogs->transform(function ($blog) {
-        // Ambil isi file HTML mentah
+    // GUNAKAN PAGINATE AGAR MENDUKUNG PAGINATION
+    $blogs = Blog::latest()->paginate(6); // <--- Ubah dari get() ke paginate(6)
+
+    // Proses transformasi isi blog
+    $blogs->getCollection()->transform(function ($blog) {
         $html = Storage::disk('local')->exists($blog->content_path)
             ? Storage::disk('local')->get($blog->content_path)
             : '';
 
-        // Hapus semua tag HTML, ambil teks bersih
         $plainText = strip_tags($html);
+        $preview = Str::limit($plainText, 200, '...');
 
-        // Ambil sekitar 200 karakter (2 baris pendek)
-        $preview = \Illuminate\Support\Str::limit($plainText, 200, '...');
-
-        // Simpan URL thumbnail
         $blog->thumbnail_path = asset('storage/' . $blog->thumbnail_path);
         $blog->preview = $preview;
 
@@ -160,6 +158,7 @@ public function showBlog()
         'blogs' => $blogs,
     ]);
 }
+
 
 public function showDetail($id)
 {

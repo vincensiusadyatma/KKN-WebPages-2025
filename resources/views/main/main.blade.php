@@ -85,7 +85,7 @@
 </section>
 
 {{-- Tentang Desa --}}
-<section class="py-16 bg-white">
+<section class="py-16 bg-white" id="about">
     <div class="max-w-5xl mx-auto text-center px-4">
         <h2 class="text-3xl font-semibold mb-4 text-gray-800">Tentang Dusun Parangan</h2>
         <p class="text-gray-600 text-lg leading-relaxed">
@@ -93,6 +93,50 @@
         </p>
     </div>
 </section>
+
+{{-- Top Destinations --}}
+<section class="bg-gray-100 py-16">
+    <div class="text-center mb-12">
+        <h2 class="text-3xl font-semibold text-gray-800">Top Destinations</h2>
+         <p class="text-gray-600 mt-2 text-sm md:text-base">Wisata sekitar Dusun Parangan, Gayamharjo</p>
+    </div>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6 px-4 md:px-20">
+        <!-- Obelix Hills -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+            <img src="{{ asset('img/obelix-hills.png') }}" alt="Obelix Hills" class="w-full h-60 object-cover">
+            <div class="p-5">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Obelix Hills</h3>
+                <p class="text-sm text-gray-600">
+                    Destinasi wisata populer di Yogyakarta yang menawarkan panorama sunset menakjubkan, spot foto estetik, dan suasana santai di atas bukit.
+                </p>
+            </div>
+        </div>
+
+        <!-- Tebing Breksi -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+            <img src="{{ asset('img/tebing_breksi.jpg') }}" alt="Tebing Breksi" class="w-full h-60 object-cover">
+            <div class="p-5">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Tebing Breksi</h3>
+                <p class="text-sm text-gray-600">
+                    Situs bekas tambang kapur yang diubah menjadi tempat wisata unik dengan pahatan seni di tebing dan pemandangan kota Yogyakarta dari ketinggian.
+                </p>
+            </div>
+        </div>
+
+        <!-- Gua Maria Sendang Sriningsih -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+            <img src="{{ asset('img/guamariasendangsriningsih.jpeg') }}" alt="Gua Maria Sendang Sriningsih" class="w-full h-60 object-cover">
+            <div class="p-5">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Gua Maria Sendang Sriningsih</h3>
+                <p class="text-sm text-gray-600">
+                    Tempat ziarah Katolik yang tenang dan sejuk, terletak di kawasan pegunungan dengan suasana hening yang cocok untuk berdoa dan refleksi diri.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
 
 <section class="py-16 bg-gray-50 font-inter antialiased">
     <div class="max-w-6xl mx-auto px-4">
@@ -141,24 +185,24 @@
 
 <section class="py-16 bg-gray-50 font-inter antialiased">
     <div class="max-w-6xl mx-auto px-4">
-        <h2 class="text-3xl font-semibold text-center mb-12">Blog & Berita Terbaru</h2>
+        <h2 class="text-3xl font-semibold text-center mb-12">Blog Terbaru</h2>
 
-        <!-- Slider Blog Otomatis -->
+        <!-- Slider Berita Otomatis -->
         <div
             x-data="{}"
             x-init="$nextTick(() => {
-                let ul = $refs.blogs;
+                let ul = $refs.berita;
                 ul.insertAdjacentHTML('afterend', ul.outerHTML);
                 ul.nextSibling.setAttribute('aria-hidden', 'true');
             })"
             class="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]"
         >
-          <ul x-ref="berita" class="flex items-center gap-6 animate-infinite-scroll px-2">
+         <ul x-ref="berita" class="flex items-center gap-6 animate-infinite-scroll px-2">
 
                 @foreach ($blogs as $blog)
                     <li class="flex-shrink-0 w-80">
                         <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition overflow-hidden">
-                            <a href="#">
+                            <a href="{{ route('blog.detail.main',[$blog->id]) }}">
                                 <img src="{{ $blog->thumbnail_url }}" class="w-full h-44 object-cover" />
                                 <div class="p-4">
                                     <h3 class="text-lg font-bold text-gray-800 mb-1">{{ $blog->title }}</h3>
@@ -176,7 +220,7 @@
 
         <!-- Tombol Lihat Selengkapnya -->
         <div class="text-center mt-8">
-            <a href="{{ route('blog.index') }}" class="bg-lime-600 text-white px-6 py-2 rounded hover:bg-lime-700 transition font-medium">
+            <a href="{{ route('berita.index') }}" class="bg-lime-600 text-white px-6 py-2 rounded hover:bg-lime-700 transition font-medium">
                 Lihat Selengkapnya →
             </a>
         </div>

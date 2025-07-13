@@ -14,7 +14,7 @@
         <!-- Menu Tengah -->
         <ul class="absolute left-1/2 transform -translate-x-1/2 hidden md:flex space-x-8 text-gray-600 font-medium">
             <li><a href="{{ route('main') }}" class="hover:text-lime-600 transition">Home</a></li>
-            <li><a href="#" class="hover:text-lime-600 transition">About</a></li>
+            <li><a href="{{ route('main') }}#about" class="hover:text-lime-600 transition">About</a></li>
             <li><a href="{{ route('blog.index') }}" class="hover:text-lime-600 transition">Blog</a></li>
             <li><a href="{{ route('berita.index') }}" class="hover:text-lime-600 transition">Berita</a></li>
         </ul>
@@ -26,7 +26,7 @@
                         class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                         id="user-menu-button">
                     <img class="w-10 h-10 rounded-full border"
-                         src="{{ auth()->user()->photo_path ? asset('storage/users/photo-profile/' . auth()->user()->photo_path) : asset('img/assets/profile1.png') }}"
+                         src="{{ asset('img/profile1.png') }}"
                          alt="User">
                 </button>
 
@@ -37,7 +37,7 @@
                         <p class="text-sm text-gray-500 truncate">{{ auth()->user()->email }}</p>
                     </div>
                     <ul class="py-2 text-sm text-gray-600">
-                        @if(auth()->user()->roles->contains('name', 'user'))
+                        @if(auth()->user()->roles->contains('name', 'super admin'))
                             <li><a href="{{ route('show-dashboard') }}" class="block px-4 py-2 hover:bg-gray-100">Dashboard</a></li>
                         @endif
                         @if(auth()->user()->roles->contains('name', 'admin'))

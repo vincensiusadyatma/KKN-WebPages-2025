@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Core\BlogController;
 use App\Http\Controllers\Core\BeritaController;
 use App\Http\Controllers\Core\DashboardController;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -54,6 +55,9 @@ Route::get('/logout', [AuthController::class, 'handleLogout'])->name('handle-log
 
 Route::middleware(['CheckRole:admin,super admin'])->prefix('dashboard')->group(function () {
     Route::get('/', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
+    Route::get('/settings', [DashboardController::class, 'settings'])->name('settings');
+    Route::post('/settings/password', [DashboardController::class, 'updatePassword'])->name('settings.password');
+    Route::post('/settings/update', [DashboardController::class, 'updateSettings'])->name('settings.update');
 
   
     // Route::get('/blog/{id}', [DashboardController::class, 'showDashboard'])->name('show-blog-detail');
@@ -98,5 +102,5 @@ Route::middleware(['CheckRole:admin,super admin'])->prefix('dashboard')->group(f
   Route::get('/search', [BlogController::class, 'search'])->name('blog.search');
 
  Route::get('/berita/main', [BeritaController::class, 'indexBerita'])->name('berita.index');
- Route::get('/berita', [BeritaController::class, 'index'])->name('berita.search');
+ Route::get('/berita', [BeritaController::class, 'searchBerita'])->name('berita.search');
  Route::get('/berita/{id}', [BeritaController::class, 'detailBerita'])->name('berita.detail.main');

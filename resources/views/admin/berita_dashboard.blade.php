@@ -14,7 +14,7 @@
     @foreach ($beritas as $berita)
     <div class="bg-white rounded-lg shadow p-4 mb-6 flex flex-col justify-between h-full">
         <img src="{{ $berita->thumbnail_path }}" alt="Thumbnail" class="w-full h-48 object-cover rounded mb-4">
-        
+
         <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ $berita->title }}</h3>
 
         @php
@@ -41,4 +41,32 @@
     </div>
     @endforeach
 </div>
+
+{{-- Pagination manual seperti blog --}}
+@if ($beritas->lastPage() > 1)
+    <div class="mt-6 flex justify-center items-center space-x-2">
+        {{-- Previous Page --}}
+        @if ($beritas->onFirstPage())
+            <span class="px-3 py-1 bg-gray-200 text-gray-500 rounded">←</span>
+        @else
+            <a href="{{ $beritas->previousPageUrl() }}" class="px-3 py-1 bg-white border text-gray-700 rounded hover:bg-gray-100">←</a>
+        @endif
+
+        {{-- Page Numbers --}}
+        @for ($i = 1; $i <= $beritas->lastPage(); $i++)
+            @if ($i == $beritas->currentPage())
+                <span class="px-3 py-1 bg-lime-600 text-white rounded font-semibold">{{ $i }}</span>
+            @else
+                <a href="{{ $beritas->url($i) }}" class="px-3 py-1 bg-white border text-gray-700 rounded hover:bg-gray-100">{{ $i }}</a>
+            @endif
+        @endfor
+
+        {{-- Next Page --}}
+        @if ($beritas->hasMorePages())
+            <a href="{{ $beritas->nextPageUrl() }}" class="px-3 py-1 bg-white border text-gray-700 rounded hover:bg-gray-100">→</a>
+        @else
+            <span class="px-3 py-1 bg-gray-200 text-gray-500 rounded">→</span>
+        @endif
+    </div>
+@endif
 @endsection
