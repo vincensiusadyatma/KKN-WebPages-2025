@@ -1,16 +1,45 @@
 <?php
 
+use App\Models\Blog;
+use App\Models\Berita;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Core\BeritaController;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Core\BlogController;
+use App\Http\Controllers\Core\BeritaController;
 use App\Http\Controllers\Core\DashboardController;
 
 // Route::get('/', function () {
 //     return view('welcome');
 // });
 Route::get('/', function () {
-    return view('main.main');
+    // Ambil data blog dan berita terbaru
+    $blogs = Blog::latest()->take(6)->get();
+    $berita = Berita::latest()->take(6)->get();
+
+    // Format data blog
+    $blogs->transform(function ($blog) {
+        $html = Storage::disk('local')->exists($blog->content_path)
+            ? Storage::disk('local')->get($blog->content_path)
+            : '';
+        $blog->preview = Str::limit(strip_tags($html), 200, '...');
+        $blog->thumbnail_url = asset('storage/' . $blog->thumbnail_path);
+        return $blog;
+    });
+
+    // Format data berita
+    $berita->transform(function ($item) {
+        $html = Storage::disk('local')->exists($item->content_path)
+            ? Storage::disk('local')->get($item->content_path)
+            : '';
+        $item->preview = Str::limit(strip_tags($html), 200, '...');
+        $item->thumbnail_url = asset('storage/' . $item->thumbnail_path);
+        return $item;
+    });
+
+    // Kirim ke view
+    return view('main.main', compact('blogs', 'berita'));
 })->name('main');
 
 
