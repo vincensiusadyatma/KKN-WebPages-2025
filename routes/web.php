@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Core\BlogController;
+use App\Http\Controllers\Core\BeritaController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Core\BlogController;
 use App\Http\Controllers\Core\DashboardController;
 
 // Route::get('/', function () {
@@ -50,6 +51,17 @@ Route::middleware(['CheckRole:admin,super admin'])->prefix('dashboard')->group(f
         Route::get('/main', [BlogController::class, 'index'])->name('blog.index');
         Route::get('/main/search', [BlogController::class, 'search'])->name('blog.search');
     });
+
+    Route::middleware(['CheckRole:admin,super admin'])->prefix('berita')->group(function () {   
+          Route::get('/', [BeritaController::class, 'index'])->name('show-berita');
+        Route::get('/create', [BeritaController::class, 'showCreate'])->name('show-berita-create');
+        Route::post('/create/new', [BeritaController::class, 'store'])->name('berita.store');
+        Route::get('/{id}/edit', [BeritaController::class, 'edit'])->name('berita.edit');
+        Route::put('/{id}', [BeritaController::class, 'update'])->name('berita.update');
+        Route::delete('/{id}', [BeritaController::class, 'destroy'])->name('berita.destroy');
+        Route::get('/{id}', [BeritaController::class, 'show'])->name('berita.detail');
+
+     });
 });
 
   Route::get('/blog/main/{id}', [BlogController::class, 'showBlogDetail'])->name('blog.detail.main');
