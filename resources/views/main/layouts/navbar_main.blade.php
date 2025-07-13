@@ -16,7 +16,7 @@
             <li><a href="{{ route('main') }}" class="hover:text-lime-600 transition">Home</a></li>
             <li><a href="#" class="hover:text-lime-600 transition">About</a></li>
             <li><a href="{{ route('blog.index') }}" class="hover:text-lime-600 transition">Blog</a></li>
-            <li><a href="#" class="hover:text-lime-600 transition">Berita</a></li>
+            <li><a href="{{ route('berita.index') }}" class="hover:text-lime-600 transition">Berita</a></li>
         </ul>
 
         <!-- User / Login Kanan -->

@@ -66,4 +66,8 @@ Route::middleware(['CheckRole:admin,super admin'])->prefix('dashboard')->group(f
 
   Route::get('/blog/main/{id}', [BlogController::class, 'showBlogDetail'])->name('blog.detail.main');
   Route::get('/blog/main', [BlogController::class, 'indexBlog'])->name('blog.index');
-Route::get('/search', [BlogController::class, 'search'])->name('blog.search');
+  Route::get('/search', [BlogController::class, 'search'])->name('blog.search');
+
+ Route::get('/berita/main', [BeritaController::class, 'indexBerita'])->name('berita.index');
+ Route::get('/berita', [BeritaController::class, 'index'])->name('berita.search');
+ Route::get('/berita/{id}', [BeritaController::class, 'detailBerita'])->name('berita.detail.main');

@@ -157,4 +157,48 @@ class BeritaController extends Controller
     return view('admin.berita_detail', compact('berita', 'content','user'));
 }
 
+ public function indexBerita()
+    {
+        $query = Berita::query();
+
+        if (request('search')) {
+            $query->where('title', 'like', '%' . request('search') . '%');
+        }
+
+        if (request('category')) {
+            $query->where('category', request('category'));
+        }
+
+        $beritas = $query->latest()->paginate(6);
+
+        $beritas->getCollection()->transform(function ($berita) {
+            $html = Storage::disk('local')->exists($berita->content_path)
+                ? Storage::disk('local')->get($berita->content_path)
+                : '';
+
+            $plainText = strip_tags($html);
+            $berita->preview = Str::limit($plainText, 150, '...');
+            $berita->thumbnail_path = asset('storage/' . $berita->thumbnail_path);
+
+            return $berita;
+        });
+
+        return view('main.berita_main', compact('beritas'));
+    }
+
+public function detailBerita($id)
+{
+    $berita = Berita::findOrFail($id);
+ $user = Auth::user();
+    $content = Storage::disk('local')->exists($berita->content_path)
+        ? Storage::disk('local')->get($berita->content_path)
+        : '';
+
+    return view('main.berita_details', [
+        'berita' => $berita,
+        'content' => $content,
+        'user' => $user
+    ]);
+}
+
 }
