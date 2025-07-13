@@ -13,9 +13,9 @@
 
         <!-- Menu Tengah -->
         <ul class="absolute left-1/2 transform -translate-x-1/2 hidden md:flex space-x-8 text-gray-600 font-medium">
-            <li><a href="#" class="hover:text-lime-600 transition">Home</a></li>
+            <li><a href="{{ route('main') }}" class="hover:text-lime-600 transition">Home</a></li>
             <li><a href="#" class="hover:text-lime-600 transition">About</a></li>
-            <li><a href="#" class="hover:text-lime-600 transition">Blog</a></li>
+            <li><a href="{{ route('blog.index') }}" class="hover:text-lime-600 transition">Blog</a></li>
             <li><a href="#" class="hover:text-lime-600 transition">Berita</a></li>
         </ul>
 

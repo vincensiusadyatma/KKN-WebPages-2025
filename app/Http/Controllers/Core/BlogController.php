@@ -12,6 +12,61 @@ use Illuminate\Support\Facades\Storage;
 
 class BlogController extends Controller
 {
+public function indexBlog()
+{
+    $blogs = Blog::with('authors')->latest()->paginate(6);
+
+    $blogs->transform(function ($blog) {
+        // Ambil isi konten dari file storage
+        $html = Storage::disk('local')->exists($blog->content_path)
+            ? Storage::disk('local')->get($blog->content_path)
+            : '';
+
+        $plainText = strip_tags($html);
+        $preview = Str::limit($plainText, 200, '...');
+
+        $blog->thumbnail_path = asset('storage/' . $blog->thumbnail_path);
+        $blog->preview = $preview;
+
+        return $blog;
+    });
+
+    return view('main.blog_main', compact('blogs'));
+}
+
+
+
+ public function showBlogDetail($id)
+{
+    $blog = Blog::findOrFail($id);
+
+    // Ambil isi file HTML dari storage/app/blogs/xxx.txt
+    $content = Storage::disk('local')->exists($blog->content_path)
+        ? Storage::disk('local')->get($blog->content_path)
+        : '<p><i>Konten tidak tersedia.</i></p>';
+
+    // Path gambar thumbnail
+    $blog->thumbnail_url = asset('storage/' . $blog->thumbnail_path);
+  
+    return view('main.blog_details_main', compact('blog', 'content'));
+}
+
+     // Fitur pencarian blog berdasarkan judul
+    public function search(Request $request)
+    {
+        $request->validate([
+            'search' => 'required|string|max:100',
+        ]);
+
+        $searchTerm = $request->input('search');
+
+        $blogs = Blog::where('title', 'like', '%' . $searchTerm . '%')
+                     ->latest()
+                     ->paginate(6)
+                     ->appends(['search' => $searchTerm]); // agar pagination tetap bawa keyword
+
+        return view('main.blog.index', compact('blogs'));
+    }
     public function storeBlog(Request $request)
     {
         $request->validate([

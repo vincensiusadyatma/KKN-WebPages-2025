@@ -83,7 +83,7 @@
             <tr>
                 <th class="text-left px-4 py-2 font-medium text-gray-600">Judul</th>
                 <th class="text-left px-4 py-2 font-medium text-gray-600">Tanggal</th>
-                <th class="text-left px-4 py-2 font-medium text-gray-600">Estimasi Kata</th>
+             
                 <th class="text-left px-4 py-2 font-medium text-gray-600">Aksi</th>
             </tr>
         </thead>
@@ -96,7 +96,7 @@
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3 text-gray-800 font-medium">{{ $blog->title }}</td>
                     <td class="px-4 py-3 text-gray-600">{{ $blog->created_at->format('d M Y') }}</td>
-                    <td class="px-4 py-3 text-gray-600">{{ $wordCount }} kata</td>
+             
                     <td class="px-4 py-3 space-x-2">
                         <a href="{{ route('blog.detail', $blog->id) }}" class="text-indigo-600 hover:underline">Lihat</a>
                         <a href="{{ route('blog.edit', $blog->id) }}" class="text-green-600 hover:underline">Edit</a>

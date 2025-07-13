@@ -45,6 +45,13 @@ Route::middleware(['CheckRole:admin,super admin'])->prefix('dashboard')->group(f
         Route::get('/{id}', [BlogController::class, 'showDetail'])->name('blog.detail');
         Route::put('{id}/update', [BlogController::class, 'update'])->name('blog.update');
         Route::delete('{id}/delete', [BlogController::class, 'destroy'])->name('blog.destroy');
-
+        
+        Route::get('/main/{id}', [BlogController::class, 'show'])->name('blog.detail.main');
+        Route::get('/main', [BlogController::class, 'index'])->name('blog.index');
+        Route::get('/main/search', [BlogController::class, 'search'])->name('blog.search');
     });
 });
+
+  Route::get('/blog/main/{id}', [BlogController::class, 'showBlogDetail'])->name('blog.detail.main');
+  Route::get('/blog/main', [BlogController::class, 'indexBlog'])->name('blog.index');
+  Route::get('/blog/main/search', [BlogController::class, 'search'])->name('blog.search');

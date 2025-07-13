@@ -1,6 +1,6 @@
 @extends('template.main_template')
 
-@section('title', 'Gayam-Gayamharjo')
+@section('title', 'Parangan-Gayamharjo')
 
 @section('content')
 

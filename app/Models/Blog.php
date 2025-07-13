@@ -17,6 +17,10 @@ public function authors()
 {
     return $this->belongsToMany(User::class, 'blog_creators');
 }
-
+   // Jika hanya satu author per blog (ambil yang pertama)
+    public function creator()
+    {
+        return $this->authors()->first();
+    }
 
 }
