@@ -1,15 +1,46 @@
 <?php
 
+use App\Models\Blog;
+use App\Models\Berita;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Core\BlogController;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Core\BlogController;
+use App\Http\Controllers\Core\BeritaController;
 use App\Http\Controllers\Core\DashboardController;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 // Route::get('/', function () {
 //     return view('welcome');
 // });
 Route::get('/', function () {
-    return view('main.main');
+    // Ambil data blog dan berita terbaru
+    $blogs = Blog::latest()->take(6)->get();
+    $berita = Berita::latest()->take(6)->get();
+
+    // Format data blog
+    $blogs->transform(function ($blog) {
+        $html = Storage::disk('local')->exists($blog->content_path)
+            ? Storage::disk('local')->get($blog->content_path)
+            : '';
+        $blog->preview = Str::limit(strip_tags($html), 200, '...');
+        $blog->thumbnail_url = asset('storage/' . $blog->thumbnail_path);
+        return $blog;
+    });
+
+    // Format data berita
+    $berita->transform(function ($item) {
+        $html = Storage::disk('local')->exists($item->content_path)
+            ? Storage::disk('local')->get($item->content_path)
+            : '';
+        $item->preview = Str::limit(strip_tags($html), 200, '...');
+        $item->thumbnail_url = asset('storage/' . $item->thumbnail_path);
+        return $item;
+    });
+
+    // Kirim ke view
+    return view('main.main', compact('blogs', 'berita'));
 })->name('main');
 
 
@@ -24,6 +55,9 @@ Route::get('/logout', [AuthController::class, 'handleLogout'])->name('handle-log
 
 Route::middleware(['CheckRole:admin,super admin'])->prefix('dashboard')->group(function () {
     Route::get('/', [DashboardController::class, 'showDashboard'])->name('show-dashboard');
+    Route::get('/settings', [DashboardController::class, 'settings'])->name('settings');
+    Route::post('/settings/password', [DashboardController::class, 'updatePassword'])->name('settings.password');
+    Route::post('/settings/update', [DashboardController::class, 'updateSettings'])->name('settings.update');
 
   
     // Route::get('/blog/{id}', [DashboardController::class, 'showDashboard'])->name('show-blog-detail');
@@ -50,8 +84,23 @@ Route::middleware(['CheckRole:admin,super admin'])->prefix('dashboard')->group(f
         Route::get('/main', [BlogController::class, 'index'])->name('blog.index');
         Route::get('/main/search', [BlogController::class, 'search'])->name('blog.search');
     });
+
+    Route::middleware(['CheckRole:admin,super admin'])->prefix('berita')->group(function () {   
+          Route::get('/', [BeritaController::class, 'index'])->name('show-berita');
+        Route::get('/create', [BeritaController::class, 'showCreate'])->name('show-berita-create');
+        Route::post('/create/new', [BeritaController::class, 'store'])->name('berita.store');
+        Route::get('/{id}/edit', [BeritaController::class, 'edit'])->name('berita.edit');
+        Route::put('/{id}', [BeritaController::class, 'update'])->name('berita.update');
+        Route::delete('/{id}', [BeritaController::class, 'destroy'])->name('berita.destroy');
+        Route::get('/{id}', [BeritaController::class, 'show'])->name('berita.detail');
+
+     });
 });
 
   Route::get('/blog/main/{id}', [BlogController::class, 'showBlogDetail'])->name('blog.detail.main');
   Route::get('/blog/main', [BlogController::class, 'indexBlog'])->name('blog.index');
-Route::get('/search', [BlogController::class, 'search'])->name('blog.search');
+  Route::get('/search', [BlogController::class, 'search'])->name('blog.search');
+
+ Route::get('/berita/main', [BeritaController::class, 'indexBerita'])->name('berita.index');
+ Route::get('/berita', [BeritaController::class, 'searchBerita'])->name('berita.search');
+ Route::get('/berita/{id}', [BeritaController::class, 'detailBerita'])->name('berita.detail.main');

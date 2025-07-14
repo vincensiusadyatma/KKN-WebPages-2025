@@ -9,6 +9,16 @@
     @vite('resources/css/app.css')
 
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+@keyframes infinite-scroll {
+    0%   { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+}
+
+.animate-infinite-scroll {
+    animation: infinite-scroll 40s linear infinite;
+}
+</style>
 <body class="bg-white text-gray-900 font-sans leading-normal">
 
     @include('main.layouts.navbar_main')
@@ -34,6 +44,26 @@
         @endif
 
      @include('main.layouts.footer_main')
+
+     <script>
+    fetch("https://wttr.in/Gayam?format=%C+%t")
+        .then(response => response.text())
+        .then(data => {
+            // Contoh hasil: "Partly cloudy +31°C"
+            const parts = data.split(' ');
+            const suhu = parts.pop(); // Ambil suhu (+31°C)
+            const cuaca = parts.join(' '); // Gabungkan sisanya untuk cuaca
+
+            document.getElementById('cuaca').textContent = cuaca;
+            document.getElementById('suhu').textContent = suhu;
+        })
+        .catch(() => {
+            document.getElementById('cuaca').textContent = "Cuaca tidak tersedia";
+            document.getElementById('suhu').textContent = "Suhu tidak tersedia";
+        });
+</script>
+
+
 
 </body>
 </html>

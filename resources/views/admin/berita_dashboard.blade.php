@@ -1,41 +1,72 @@
 @extends('template.admin_dashboard_template')
 
-@section('title', 'Dashboard - Berita Terbaru')
+@section('title', 'Dashboard - Berita')
 
 @section('content')
 <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold text-gray-800">Berita Terbaru</h1>
-
-    {{-- Tombol Create Berita --}}
-    <a href="/dashboard/berita/create" class="inline-block px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md shadow hover:bg-blue-700 transition">
+    <a href="{{ route('show-berita-create') }}" class="inline-block px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-md shadow hover:bg-green-700 transition">
         + Buat Berita
     </a>
 </div>
 
-{{-- Card List Berita (Static) --}}
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    {{-- Card 1 --}}
-    <div class="bg-white rounded-lg shadow p-4">
-        <img src="{{ asset('img/assets/berita-thumb-1.jpg') }}" alt="Berita Thumbnail" class="rounded-md mb-4 w-full h-40 object-cover">
-        <h3 class="text-lg font-bold text-gray-800 mb-2">Kegiatan Sosial di Dusun</h3>
-        <p class="text-sm text-gray-600 mb-4">Warga bersama mahasiswa KKN melakukan kegiatan bersih desa dan pembagian sembako...</p>
-        <a href="#" class="text-indigo-600 text-sm hover:underline">Lihat Selengkapnya</a>
-    </div>
+    @foreach ($beritas as $berita)
+    <div class="bg-white rounded-lg shadow p-4 mb-6 flex flex-col justify-between h-full">
+        <img src="{{ $berita->thumbnail_path }}" alt="Thumbnail" class="w-full h-48 object-cover rounded mb-4">
 
-    {{-- Card 2 --}}
-    <div class="bg-white rounded-lg shadow p-4">
-        <img src="{{ asset('img/assets/berita-thumb-2.jpg') }}" alt="Berita Thumbnail" class="rounded-md mb-4 w-full h-40 object-cover">
-        <h3 class="text-lg font-bold text-gray-800 mb-2">Perbaikan Jalan Dusun</h3>
-        <p class="text-sm text-gray-600 mb-4">Pemerintah desa bersama warga memperbaiki jalan rusak di RT 03 untuk kelancaran akses warga...</p>
-        <a href="#" class="text-indigo-600 text-sm hover:underline">Lihat Selengkapnya</a>
-    </div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ $berita->title }}</h3>
 
-    {{-- Card 3 --}}
-    <div class="bg-white rounded-lg shadow p-4">
-        <img src="{{ asset('img/assets/berita-thumb-3.jpg') }}" alt="Berita Thumbnail" class="rounded-md mb-4 w-full h-40 object-cover">
-        <h3 class="text-lg font-bold text-gray-800 mb-2">Lomba 17 Agustus Akan Digelar</h3>
-        <p class="text-sm text-gray-600 mb-4">Panitia dusun telah menyiapkan berbagai lomba menarik untuk merayakan HUT RI ke-79...</p>
-        <a href="#" class="text-indigo-600 text-sm hover:underline">Lihat Selengkapnya</a>
+        @php
+            $allowedTags = '<b><i><u><strong><em>';
+            $lines = preg_split('/(\r\n|\r|\n)/', strip_tags($berita->preview ?? '', $allowedTags));
+            $lines = array_filter(array_map('trim', $lines));
+            $displayed = array_slice($lines, 0, 2);
+            $isTrimmed = count($lines) > 2 || str_ends_with(trim($berita->preview), '...');
+        @endphp
+
+        <div class="text-sm text-gray-600 leading-relaxed break-words">
+            @foreach ($displayed as $line)
+                <p class="mb-2">{!! $line !!}</p>
+            @endforeach
+            @if ($isTrimmed)
+                <p class="text-gray-500">...</p>
+            @endif
+        </div>
+
+        <a href="{{ route('berita.detail', ['id' => $berita->id]) }}" 
+           class="mt-4 inline-block text-center px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 transition">
+            View Details
+        </a>
     </div>
+    @endforeach
 </div>
+
+{{-- Pagination manual seperti blog --}}
+@if ($beritas->lastPage() > 1)
+    <div class="mt-6 flex justify-center items-center space-x-2">
+        {{-- Previous Page --}}
+        @if ($beritas->onFirstPage())
+            <span class="px-3 py-1 bg-gray-200 text-gray-500 rounded">←</span>
+        @else
+            <a href="{{ $beritas->previousPageUrl() }}" class="px-3 py-1 bg-white border text-gray-700 rounded hover:bg-gray-100">←</a>
+        @endif
+
+        {{-- Page Numbers --}}
+        @for ($i = 1; $i <= $beritas->lastPage(); $i++)
+            @if ($i == $beritas->currentPage())
+                <span class="px-3 py-1 bg-lime-600 text-white rounded font-semibold">{{ $i }}</span>
+            @else
+                <a href="{{ $beritas->url($i) }}" class="px-3 py-1 bg-white border text-gray-700 rounded hover:bg-gray-100">{{ $i }}</a>
+            @endif
+        @endfor
+
+        {{-- Next Page --}}
+        @if ($beritas->hasMorePages())
+            <a href="{{ $beritas->nextPageUrl() }}" class="px-3 py-1 bg-white border text-gray-700 rounded hover:bg-gray-100">→</a>
+        @else
+            <span class="px-3 py-1 bg-gray-200 text-gray-500 rounded">→</span>
+        @endif
+    </div>
+@endif
 @endsection
