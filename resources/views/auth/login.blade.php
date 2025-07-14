@@ -76,7 +76,7 @@
                 </button>
             </div>
 
-            {{-- Google Sign In --}}
+            {{-- Google Sign In
             <div class="mt-6 text-center">
                 <p class="text-sm text-gray-600">atau login dengan</p>
                 <a href="#"
@@ -84,7 +84,7 @@
                     <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5">
                     <span class="text-sm font-medium text-gray-700">Google</span>
                 </a>
-            </div>
+            </div> --}}
         </form>
     </div>
 

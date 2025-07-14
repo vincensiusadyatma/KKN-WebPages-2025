@@ -4,37 +4,38 @@ namespace App\Http\Controllers\Core;
 
 use App\Models\Blog;
 use App\Models\User;
+use App\Models\Berita;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
 {
- public function showDashboard()
+public function showDashboard()
 {
     $user = Auth::user();
 
-    // Hitung jumlah semua blog
     $jumlahBlog = Blog::count();
-
-    // Hitung konten yang dibuat oleh user ini (relasi blog_creators)
+    $jumlahBerita = Berita::count();
     $dibuatOlehSaya = $user->blogs->count();
 
-    // Hitung jumlah admin berdasarkan role many-to-many
     $jumlahAdmin = User::whereHas('roles', function ($query) {
         $query->where('name', 'admin');
     })->count();
 
     return view('admin.dashboard', [
         'jumlahBlog' => $jumlahBlog,
-        'jumlahBerita' => 8, // masih statis seperti permintaan
+        'jumlahBerita' => $jumlahBerita,
         'dibuatOlehSaya' => $dibuatOlehSaya,
         'jumlahAdmin' => $jumlahAdmin,
         'user' => $user,
-        'blogs' => Blog::latest()->take(10)->get(), // opsional, jika bagian bawah dashboard butuh
+        'blogs' => Blog::latest()->take(10)->get(),
+        'beritas' => Berita::latest()->take(10)->get(),
     ]);
 }
+
 
     public function showBlog()
     {
@@ -57,6 +58,7 @@ class DashboardController extends Controller
     public function showAdminManagement()
     {
         $user = Auth::user();
+       
 
         $list_users = User::where('id', '!=', $user->id)->get();
 
@@ -77,10 +79,12 @@ class DashboardController extends Controller
 
     public function showAdminDetails($id)
     {
-        $user = User::findOrFail($id);
+         $user = Auth::user();
+        $admin = User::findOrFail($id);
 
         return view('admin.user_admin_detail_dashboard', [
-            'user' => $user,
+              'user' => $user,
+            'admin' => $admin,
         ]);
     }
 
@@ -147,4 +151,61 @@ $userAuth = Auth::user();
         ]);
     }
 }
+
+public function settings()
+{
+    $user = Auth::user();
+    return view('admin.settings',[
+        'user' => $user
+    ]);
+}
+
+public function updatePassword(Request $request)
+{
+    $user = Auth::user();
+
+    $request->validate([
+        'current_password' => 'required',
+        'new_password' => 'required|min:6|confirmed',
+    ]);
+
+    if (!Hash::check($request->current_password, $user->password)) {
+        return back()->with('toast', ['type' => 'error', 'message' => 'Password lama salah.']);
+    }
+
+    DB::table('users')
+        ->where('id', $user->id)
+        ->update(['password' => Hash::make($request->new_password)]);
+
+    return back()->with('toast', ['type' => 'success', 'message' => 'Password berhasil diubah.']);
+}
+
+public function updateSettings(Request $request)
+{
+    $user = Auth::user();
+
+    $request->validate([
+        'username' => 'required|string|max:255',
+        'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+        'phone_number' => 'nullable|string|max:20',
+        'address' => 'nullable|string|max:500',
+        'new_password' => 'nullable|string|min:6',
+    ]);
+
+    $data = [
+        'username' => $request->username,
+        'email' => $request->email,
+        'phone_number' => $request->phone_number,
+        'address' => $request->address,
+    ];
+
+    if ($request->filled('new_password')) {
+        $data['password'] = Hash::make($request->new_password);
+    }
+
+    DB::table('users')->where('id', $user->id)->update($data);
+
+    return back()->with('toast', ['type' => 'success', 'message' => 'Data berhasil diperbarui.']);
+}
+
 }
