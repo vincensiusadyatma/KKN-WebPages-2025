@@ -16,15 +16,18 @@
         ['title' => 'Jumlah Berita', 'value' => $jumlahBerita, 'color' => 'emerald'],
         ['title' => 'Konten oleh Anda', 'value' => $dibuatOlehSaya, 'color' => 'amber'],
         ['title' => 'Jumlah Admin', 'value' => $jumlahAdmin, 'color' => 'rose'],
+        ['title' => 'Total Pengunjung', 'value' => $totalVisitors, 'color' => 'sky'],
     ];
 @endphp
 
 <!-- Statistik Ringkas -->
-<section class="grid md:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
+<section class="grid md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5 gap-6 mt-8">
     @foreach ($stats as $stat)
         <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
             <div class="text-sm text-gray-500">{{ $stat['title'] }}</div>
-            <div class="text-3xl font-bold text-{{ $stat['color'] }}-600 mt-2">{{ $stat['value'] }}</div>
+            <div class="text-3xl font-bold text-{{ $stat['color'] }}-600 mt-2">
+                {{ number_format($stat['value']) }}
+            </div>
         </div>
     @endforeach
 </section>
@@ -47,40 +50,40 @@
     </div>
 
     <!-- Progress -->
-<div class="bg-white p-6 rounded-xl shadow-md">
-    <h3 class="text-xl font-semibold text-gray-700 mb-4">Statistik Konten Bulan Ini</h3>
+    <div class="bg-white p-6 rounded-xl shadow-md">
+        <h3 class="text-xl font-semibold text-gray-700 mb-4">Statistik Konten Bulan Ini</h3>
 
-    @php
-        $totalKonten = $jumlahBlog + $jumlahBerita;
-        $persenBlog = $totalKonten > 0 ? round(($jumlahBlog / $totalKonten) * 100) : 0;
-        $persenBerita = $totalKonten > 0 ? round(($jumlahBerita / $totalKonten) * 100) : 0;
-    @endphp
+        @php
+            $totalKonten = $jumlahBlog + $jumlahBerita;
+            $persenBlog = $totalKonten > 0 ? round(($jumlahBlog / $totalKonten) * 100) : 0;
+            $persenBerita = $totalKonten > 0 ? round(($jumlahBerita / $totalKonten) * 100) : 0;
+        @endphp
 
-    <div class="space-y-6">
-        <!-- Blog -->
-        <div>
-            <div class="flex justify-between text-sm font-medium text-gray-600 mb-1">
-                <span>Blog ({{ $jumlahBlog }} konten)</span>
-                <span class="text-indigo-600 font-semibold">{{ $persenBlog }}%</span>
+        <div class="space-y-6">
+            <!-- Blog -->
+            <div>
+                <div class="flex justify-between text-sm font-medium text-gray-600 mb-1">
+                    <span>Blog ({{ $jumlahBlog }} konten)</span>
+                    <span class="text-indigo-600 font-semibold">{{ $persenBlog }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="bg-indigo-600 h-3 rounded-full transition-all duration-300" style="width: {{ $persenBlog }}%"></div>
+                </div>
             </div>
-            <div class="w-full bg-gray-200 rounded-full h-3">
-                <div class="bg-indigo-600 h-3 rounded-full transition-all duration-300" style="width: {{ $persenBlog }}%"></div>
-            </div>
-        </div>
 
-        <!-- Berita -->
-        <div>
-            <div class="flex justify-between text-sm font-medium text-gray-600 mb-1">
-                <span>Berita ({{ $jumlahBerita }} konten)</span>
-                <span class="text-emerald-600 font-semibold">{{ $persenBerita }}%</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-3">
-                <div class="bg-emerald-500 h-3 rounded-full transition-all duration-300" style="width: {{ $persenBerita }}%"></div>
+            <!-- Berita -->
+            <div>
+                <div class="flex justify-between text-sm font-medium text-gray-600 mb-1">
+                    <span>Berita ({{ $jumlahBerita }} konten)</span>
+                    <span class="text-emerald-600 font-semibold">{{ $persenBerita }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="bg-emerald-500 h-3 rounded-full transition-all duration-300" style="width: {{ $persenBerita }}%"></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
+</section>
 
 <!-- Konten Blog Terbaru -->
 <section class="mt-10 bg-white p-6 rounded-xl shadow-md">
@@ -143,6 +146,4 @@
         </tbody>
     </table>
 </section>
-
-
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Core;
 
 use App\Models\Blog;
+use App\Models\ContentView;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -36,21 +37,32 @@ public function indexBlog()
 
 
 
- public function showBlogDetail($id)
+public function showBlogDetail($id)
 {
     $blog = Blog::findOrFail($id);
 
-    // Ambil isi file HTML dari storage/app/blogs/xxx.txt
+    // Tambah jumlah views
+    $contentView = ContentView::firstOrCreate(
+    ['content_type' => 'blog', 'content_id' => $blog->id],
+    ['views' => 0]
+);
+
+$contentView->increment('views');
+
+    // Ambil jumlah views
+    $views = ContentView::where('content_type', 'blog')
+        ->where('content_id', $blog->id)
+        ->value('views') ?? 0;
+
+    // Ambil konten
     $content = Storage::disk('local')->exists($blog->content_path)
         ? Storage::disk('local')->get($blog->content_path)
         : '<p><i>Konten tidak tersedia.</i></p>';
 
-    // Path gambar thumbnail
     $blog->thumbnail_url = asset('storage/' . $blog->thumbnail_path);
-  
-    return view('main.blog_details_main', compact('blog', 'content'));
-}
 
+    return view('main.blog_details_main', compact('blog', 'content', 'views'));
+}
   public function search(Request $request)
 {
  
@@ -152,6 +164,8 @@ public function showBlog()
 
         return $blog;
     });
+
+   
 
     return view('admin.blog_dashboard', [
         'user' => $user,

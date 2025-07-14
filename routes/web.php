@@ -14,34 +14,44 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
-Route::get('/', function () {
-    // Ambil data blog dan berita terbaru
-    $blogs = Blog::latest()->take(6)->get();
-    $berita = Berita::latest()->take(6)->get();
+// Route Homepage dan Publik
+Route::middleware('CountSiteVisit')->group(function () {
 
-    // Format data blog
-    $blogs->transform(function ($blog) {
-        $html = Storage::disk('local')->exists($blog->content_path)
-            ? Storage::disk('local')->get($blog->content_path)
-            : '';
-        $blog->preview = Str::limit(strip_tags($html), 200, '...');
-        $blog->thumbnail_url = asset('storage/' . $blog->thumbnail_path);
-        return $blog;
-    });
+    Route::get('/', function () {
 
-    // Format data berita
-    $berita->transform(function ($item) {
-        $html = Storage::disk('local')->exists($item->content_path)
-            ? Storage::disk('local')->get($item->content_path)
-            : '';
-        $item->preview = Str::limit(strip_tags($html), 200, '...');
-        $item->thumbnail_url = asset('storage/' . $item->thumbnail_path);
-        return $item;
-    });
+        // Ambil 6 blog dan berita terbaru
+        $blogs = Blog::latest()->take(6)->get();
+        $berita = Berita::latest()->take(6)->get();
 
-    // Kirim ke view
-    return view('main.main', compact('blogs', 'berita'));
-})->name('main');
+        // Format blog
+        $blogs->transform(function ($blog) {
+            $contentPath = $blog->content_path;
+            $html = Storage::disk('local')->exists($contentPath)
+                ? Storage::disk('local')->get($contentPath)
+                : '';
+
+            $blog->preview = Str::limit(strip_tags($html), 200, '...');
+            $blog->thumbnail_url = asset('storage/' . $blog->thumbnail_path);
+            return $blog;
+        });
+
+        // Format berita
+        $berita->transform(function ($item) {
+            $contentPath = $item->content_path;
+            $html = Storage::disk('local')->exists($contentPath)
+                ? Storage::disk('local')->get($contentPath)
+                : '';
+
+            $item->preview = Str::limit(strip_tags($html), 200, '...');
+            $item->thumbnail_url = asset('storage/' . $item->thumbnail_path);
+            return $item;
+        });
+
+        // Kirim ke view
+        return view('main.main', compact('blogs', 'berita'));
+    })->name('main');
+
+});
 
 
 Route::prefix('auth')->middleware('guest')->group(function () {

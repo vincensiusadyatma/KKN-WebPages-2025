@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Core;
 use App\Models\Blog;
 use App\Models\User;
 use App\Models\Berita;
+use App\Models\SiteVisit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -25,11 +26,14 @@ public function showDashboard()
         $query->where('name', 'admin');
     })->count();
 
+    $totalVisitors = SiteVisit::count(); // ✅ ambil total visitor dari tabel site_visits
+
     return view('admin.dashboard', [
         'jumlahBlog' => $jumlahBlog,
         'jumlahBerita' => $jumlahBerita,
         'dibuatOlehSaya' => $dibuatOlehSaya,
         'jumlahAdmin' => $jumlahAdmin,
+        'totalVisitors' => $totalVisitors, // ✅ kirim ke view
         'user' => $user,
         'blogs' => Blog::latest()->take(10)->get(),
         'beritas' => Berita::latest()->take(10)->get(),

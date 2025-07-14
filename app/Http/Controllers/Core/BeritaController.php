@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers\Core;
 use App\Models\Berita;
+use App\Models\ContentView;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -221,15 +222,31 @@ class BeritaController extends Controller
 public function detailBerita($id)
 {
     $berita = Berita::findOrFail($id);
- $user = Auth::user();
+
+    // Tambah jumlah views (FIXED: content_type harus 'berita')
+  $contentView = ContentView::firstOrCreate(
+    ['content_type' => 'berita', 'content_id' => $berita->id],
+    ['views' => 0]
+);
+
+$contentView->increment('views');
+
+    // Ambil jumlah views
+    $views = ContentView::where('content_type', 'berita')
+        ->where('content_id', $berita->id)
+        ->value('views') ?? 0;
+
+    $user = Auth::user();
+
     $content = Storage::disk('local')->exists($berita->content_path)
         ? Storage::disk('local')->get($berita->content_path)
-        : '';
+        : '<p><i>Konten tidak tersedia.</i></p>';
 
     return view('main.berita_details', [
         'berita' => $berita,
         'content' => $content,
-        'user' => $user
+        'user' => $user,
+        'views' => $views
     ]);
 }
 

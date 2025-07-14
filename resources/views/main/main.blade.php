@@ -157,7 +157,7 @@
                 @foreach ($berita as $item)
                     <li class="flex-shrink-0 w-80">
                         <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition overflow-hidden">
-                            <a href="#">
+                            <a href="{{ route('berita.detail',[$item->id]) }}">
                                 <img src="{{ $item->thumbnail_url }}" class="w-full h-44 object-cover" />
                                 <div class="p-4">
                                     <h3 class="text-lg font-bold text-gray-800 mb-1">{{ $item->title }}</h3>
