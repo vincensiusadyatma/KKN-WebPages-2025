@@ -24,6 +24,22 @@
                    class="w-full mt-1 px-4 py-2 border rounded-md focus:ring focus:ring-purple-300" required>
             @error('email') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
         </div>
+        <!-- Nomor Telepon -->
+<div>
+    <label class="block text-sm text-gray-600">Nomor Telepon</label>
+    <input type="text" name="phone_number" value="{{ old('phone_number', auth()->user()->phone_number) }}"
+           class="w-full mt-1 px-4 py-2 border rounded-md focus:ring focus:ring-purple-300">
+    @error('phone_number') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
+</div>
+
+<!-- Alamat -->
+<div>
+    <label class="block text-sm text-gray-600">Alamat</label>
+    <textarea name="address" rows="3"
+              class="w-full mt-1 px-4 py-2 border rounded-md focus:ring focus:ring-purple-300">{{ old('address', auth()->user()->address) }}</textarea>
+    @error('address') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
+</div>
+
 
         <!-- Password Baru (Opsional) -->
         <div>

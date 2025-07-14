@@ -43,9 +43,9 @@
                         @if(auth()->user()->roles->contains('name', 'admin'))
                             <li><a href="{{ route('show-dashboard') }}" class="block px-4 py-2 hover:bg-gray-100">Dashboard Admin</a></li>
                         @endif
-                        <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Profile</a></li>
+                       
                         <li>
-                            <form method="POST" action="{{ route('handle-logout') }}">
+                            <form method="GET" action="{{ route('handle-logout') }}">
                                 @csrf
                                 <button type="submit"
                                         class="w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>

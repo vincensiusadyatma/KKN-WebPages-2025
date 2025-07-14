@@ -1,11 +1,13 @@
    <header class="flex items-center h-20 px-6 sm:px-10 bg-white">
   <!-- Menu Button for Mobile -->
-  <button class="block sm:hidden relative flex-shrink-0 p-2 mr-2 text-gray-600 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800 rounded-full">
+ <button id="hamburgerBtn"
+    class="block sm:hidden relative flex-shrink-0 p-2 mr-2 text-gray-600 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800 rounded-full"
+>
     <span class="sr-only">Menu</span>
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
     </svg>
-  </button>
+</button>
 
   {{-- <!-- Search Input -->
   <div class="relative w-full max-w-md sm:-ml-2">
@@ -38,15 +40,18 @@
       </svg>
     </button> --}}
 
-    <!-- User Profile -->
-    <div class="flex items-center space-x-3">
-      <div class="hidden md:flex flex-col items-end leading-tight">
-        <span class="font-semibold">{{ $user->username }}</span>
-        <span class="text-sm text-gray-600">{{ $user->roles->first()?->name }}</span>
-      </div>
-      <img src="{{ asset('img/profile1.png') }}" alt="User Photo" class="h-12 w-12 rounded-full object-cover border border-gray-300" />
+  <!-- User Profile -->
+<div class="flex items-center space-x-3">
+  <div class="hidden md:flex flex-col items-end leading-tight">
+    <span class="font-semibold">{{ $user->username }}</span>
+    <span class="text-sm text-gray-600">{{ $user->roles->first()?->name }}</span>
+  </div>
+  <div class="w-12 h-12 relative">
+    <img src="{{ asset('img/profile1.png') }}" alt="User Photo"
+         class="absolute inset-0 w-full h-full rounded-full object-cover border border-gray-300" />
+  </div>
+</div>
 
-    </div>
 
     <!-- Logout Button -->
     <a href="/logout" class="p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:bg-gray-100 focus:text-gray-600 rounded-full" title="Logout">

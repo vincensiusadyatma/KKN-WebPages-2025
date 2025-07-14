@@ -58,6 +58,7 @@ public function showDashboard()
     public function showAdminManagement()
     {
         $user = Auth::user();
+       
 
         $list_users = User::where('id', '!=', $user->id)->get();
 
@@ -78,10 +79,12 @@ public function showDashboard()
 
     public function showAdminDetails($id)
     {
-        $user = User::findOrFail($id);
+         $user = Auth::user();
+        $admin = User::findOrFail($id);
 
         return view('admin.user_admin_detail_dashboard', [
-            'user' => $user,
+              'user' => $user,
+            'admin' => $admin,
         ]);
     }
 
@@ -184,12 +187,16 @@ public function updateSettings(Request $request)
     $request->validate([
         'username' => 'required|string|max:255',
         'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+        'phone_number' => 'nullable|string|max:20',
+        'address' => 'nullable|string|max:500',
         'new_password' => 'nullable|string|min:6',
     ]);
 
     $data = [
         'username' => $request->username,
         'email' => $request->email,
+        'phone_number' => $request->phone_number,
+        'address' => $request->address,
     ];
 
     if ($request->filled('new_password')) {

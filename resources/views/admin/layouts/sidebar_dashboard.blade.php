@@ -1,8 +1,11 @@
-<aside class="hidden sm:flex sm:flex-col">
-    <!-- Logo -->
-    <a href="/" class="inline-flex items-center justify-center h-20 w-20 bg-green-400 hover:bg-green-500" title="Home">
-        <img src="{{ asset('img/dusun-logo.png') }}" alt="Logo Dusun" class="h-12 w-12 object-contain" />
-    </a>
+<aside id="sidebar"
+    class="hidden sm:flex sm:flex-col fixed top-0 left-0 z-50 bg-gray-800 w-64 h-full sm:relative sm:top-auto sm:left-auto sm:h-auto sm:w-auto"
+>
+<!-- Logo -->
+<a href="/" class="flex items-center justify-center h-20 w-full sm:w-20 bg-green-400 hover:bg-green-500" title="Home">
+    <img src="{{ asset('img/dusun-logo.png') }}" alt="Logo Dusun" class="h-12 w-12 object-contain" />
+</a>
+
 
     <!-- Sidebar Menu -->
     <div class="flex-grow flex flex-col justify-between text-gray-500 bg-gray-800">
@@ -81,3 +84,5 @@
         </div>
     </div>
 </aside>
+
+

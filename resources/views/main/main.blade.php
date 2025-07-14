@@ -24,7 +24,7 @@
             <div class="text-5xl mb-4 text-lime-500">🌤️</div>
             <h3 class="font-bold text-lg mb-2">Cuaca Hari Ini</h3>
             <p id="cuaca" class="text-gray-600 text-sm">Memuat data cuaca...</p>
-            <p class="mt-2 text-xs text-gray-500">Pantauan cuaca real-time untuk aktivitas harian warga dan wisatawan.</p>
+            <p class="mt-2 text-xs text-gray-500">Pantauan cuaca real-time untuk aktivitas di dusun parangan </p>
         </div>
 
         {{-- Suhu --}}
@@ -150,9 +150,9 @@
                 ul.insertAdjacentHTML('afterend', ul.outerHTML);
                 ul.nextSibling.setAttribute('aria-hidden', 'true');
             })"
-            class="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]"
+            class="mb-10 w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]"
         >
-         <ul x-ref="berita" class="flex items-center gap-6 animate-infinite-scroll px-2">
+         <ul x-ref="berita" class="flex items-center gap-6 animate-infinite-scroll px-2 mb-10">
 
                 @foreach ($berita as $item)
                     <li class="flex-shrink-0 w-80">
@@ -187,7 +187,7 @@
     <div class="max-w-6xl mx-auto px-4">
         <h2 class="text-3xl font-semibold text-center mb-12">Blog Terbaru</h2>
 
-        <!-- Slider Berita Otomatis -->
+        <!-- Slider Blog Otomatis -->
         <div
             x-data="{}"
             x-init="$nextTick(() => {
@@ -197,7 +197,7 @@
             })"
             class="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]"
         >
-         <ul x-ref="berita" class="flex items-center gap-6 animate-infinite-scroll px-2">
+         <ul x-ref="berita" class="flex items-center gap-6 animate-infinite-scroll px-2 mb-10">
 
                 @foreach ($blogs as $blog)
                     <li class="flex-shrink-0 w-80">
@@ -233,9 +233,10 @@
 <section class="py-20 bg-gray-100">
     <div class="max-w-5xl mx-auto px-4 text-center">
         <h2 class="text-3xl font-semibold text-gray-800 mb-4">Hubungi Kami</h2>
-        <p class="text-gray-600">Padukuhan Gayam, Dusun Gayam, Desa Gayamharjo, Prambanan, Sleman</p>
-        <p class="text-gray-600">Email: <a href="mailto:desaharmoni@example.com" class="text-blue-600 hover:underline">desaharmoni@example.com</a> | Telp: (021) 12345678</p>
-         <div class="relative w-full h-96 rounded-lg overflow-hidden shadow-lg">
+        <p class="text-gray-600">Padukuhan Gayam, Dusun Parangan, Desa Gayamharjo, Prambanan, Sleman</p>
+        {{-- <p class="text-gray-600">Email: <a href="mailto:desaharmoni@example.com" class="text-blue-600 hover:underline">desaharmoni@example.com</a> | Telp: (021) 12345678</p> --}}
+        <p class="mb-10">Telp: (021) 12345678</p> 
+        <div class="relative w-full h-96 rounded-lg overflow-hidden shadow-lg">
             <iframe
                 class="absolute top-0 left-0 w-full h-full border-0"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6577.738980944317!2d110.52720003561903!3d-7.808906053243921!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a4fddab6242e3%3A0xa4b4eb227b61f50c!2sGayam%2C%20Gayamharjo%2C%20Prambanan%2C%20Sleman%20Regency%2C%20Special%20Region%20of%20Yogyakarta!5e0!3m2!1sen!2sid!4v1750647892500!5m2!1sen!2sid"

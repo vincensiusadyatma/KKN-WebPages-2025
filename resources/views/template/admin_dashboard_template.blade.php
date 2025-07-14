@@ -56,5 +56,24 @@
         {{-- Extra Scripts --}}
         @yield('scripts')
     </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const hamburgerBtn = document.getElementById("hamburgerBtn");
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+
+        hamburgerBtn.addEventListener("click", function () {
+            sidebar.classList.toggle("hidden");
+            overlay.classList.toggle("hidden");
+        });
+
+        overlay.addEventListener("click", function () {
+            sidebar.classList.add("hidden");
+            overlay.classList.add("hidden");
+        });
+    });
+</script>
+
 </body>
 </html>
